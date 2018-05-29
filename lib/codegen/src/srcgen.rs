@@ -1,3 +1,4 @@
+use std::collections::{BTreeMap, HashSet};
 use std::io;
 
 static SHIFTWIDTH: usize = 4;
@@ -190,14 +191,42 @@ fn parse_multiline(s: &str) -> Vec<Option<String>> {
     unimplemented!();
 }
 
+/// Match formatting class.
+///
+/// Match objects collect all the information needed to emit a Rust `match`
+/// expression, automatically deduplicating overlapping identical arms.
+///
+/// TODO: Convert the example to Rust
+///
+/// Example:
+///
+///    >>> m = Match('x')
+///    >>> m.arm('Orange', ['a', 'b'], 'some body')
+///    >>> m.arm('Yellow', ['a', 'b'], 'some body')
+///    >>> m.arm('Green', ['a', 'b'], 'different body')
+///    >>> m.arm('Blue', ['x', 'y'], 'some body')
+///    >>> assert(len(m.arms) == 3)
+///
+/// Note that this class is ignorant of Rust types, and considers two fields
+/// with the same name to be equivalent.
 struct Match {
     expr: String,
-    // FIXUP: This will be a dictionary of some sort. Figure out the key/values.
-    // arms:
+    arms: BTreeMap<(Vec<String>, String), HashSet<String>>,
 }
 
 impl Match {
-    fn arm(&mut self, name: &str, fields: &[&str], body: &str) {
-        unimplemented!();
+    /// Create a new match statemeht on `expr`.
+    fn new(expr: String) -> Match {
+        Match {
+            expr,
+            arms: BTreeMap::new(),
+        }
+    }
+
+    /// Add an arm to the Match statement.
+    fn arm(&mut self, name: &str, fields: Vec<String>, body: &str) {
+        let key = (fields, body.to_string());
+        let match_arm = self.arms.entry(key).or_insert(HashSet::new());
+        match_arm.insert(name.to_string());
     }
 }
