@@ -194,15 +194,17 @@ fn indent(s: &str) -> Option<usize> {
 ///    >>> parse_multiline('\\n    hello\\n    world\\n')
 ///    ['hello', 'world']
 fn parse_multiline(s: &str) -> Vec<Option<String>> {
+    // Convert tabs into spaces.
+    let expanded_tab = format!("{:-1$}", " ", SHIFTWIDTH);
+    let lines: Vec<String> = s.lines().map(|l| l.replace(" ", &expanded_tab)).collect();
 
-    let lines: Vec<_> = s.lines().collect();
+    // Determine minimum indentation, ignoring the first line.
+    let min_indent = lines.iter()
+        .map(|l| l.trim_left().len())
+        .filter(|&i| i > 0)
+        .min();
 
-    // TODO: Convert leading tabs into spaces. (Relevant?)
-    unimplemented!();
-    // TODO: Determine minimum indentation, ignoring the first line.
-    unimplemented!();
     // TODO: Remove indentation (first line is special)
-    unimplemented!();
     // TODO: Strip off trailing and leading blank lines.
     unimplemented!();
 }
