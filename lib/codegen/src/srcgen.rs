@@ -187,7 +187,23 @@ fn indent(s: &str) -> Option<usize> {
     }
 }
 
+
+/// Given a multi-line string, split it into a sequence of lines after
+/// stripping a common indentation, as described in the "trim" function
+/// from PEP 257. This is useful for strings defined with doc strings:
+///    >>> parse_multiline('\\n    hello\\n    world\\n')
+///    ['hello', 'world']
 fn parse_multiline(s: &str) -> Vec<Option<String>> {
+
+    let lines: Vec<_> = s.lines().collect();
+
+    // TODO: Convert leading tabs into spaces. (Relevant?)
+    unimplemented!();
+    // TODO: Determine minimum indentation, ignoring the first line.
+    unimplemented!();
+    // TODO: Remove indentation (first line is special)
+    unimplemented!();
+    // TODO: Strip off trailing and leading blank lines.
     unimplemented!();
 }
 
