@@ -3,8 +3,23 @@ use std::io;
 
 static SHIFTWIDTH: usize = 4;
 
-struct IndentedScope;
-impl IndentedScope {}
+struct IndentedScope {
+    fmt: Formatter,
+    after: Option<String>,
+}
+
+impl IndentedScope {
+    fn enter(&mut self) {
+        self.fmt.indent_push();
+    }
+
+    fn exit(&mut self) {
+        self.fmt.indent_pop();
+        if let Some(ref s) = self.after {
+            self.fmt.line(Some(&s));
+        }
+    }
+}
 
 struct Formatter {
     indent: usize,
