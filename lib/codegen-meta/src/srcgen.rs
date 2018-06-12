@@ -1,3 +1,8 @@
+//! Source code generator.
+//!
+//! The `srcgen` module contains generic helper routines and classes for
+//! generating source code.
+
 use std::collections::{BTreeMap, HashSet};
 use std::io;
 
