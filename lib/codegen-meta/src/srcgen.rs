@@ -26,7 +26,7 @@ impl IndentedScope {
     }
 }
 
-struct Formatter {
+pub struct Formatter {
     indent: usize,
     lines: Vec<String>
 }
