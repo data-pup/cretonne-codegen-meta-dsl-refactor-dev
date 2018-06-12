@@ -1,18 +1,18 @@
 [package]
-name = "cretonne-codegen-meta"
+name = "cranelift-codegen-meta"
 authors = ["The Cretonne Project Developers"]
-version = "0.13.0"
-description = "DSL for cretonne-codegen code generator library"
+version = "0.15.0"
+description = "DSL for cranelift-codegen code generator library"
 license = "Apache-2.0"
-documentation = "https://cretonne.readthedocs.io/"
-repository = "https://github.com/cretonne/cretonne"
+documentation = "https://cranelift.readthedocs.io/"
+repository = "https://github.com/CraneStation/cranelift"
 keywords = ["compile", "compiler", "jit"]
 
 [dependencies]
-# It is a goal of the cretonne-codegen crate to have minimal external dependencies.
+# It is a goal of the cranelift-codegen crate to have minimal external dependencies.
 # Please don't add any unless they are essential to the task of creating binary
 # machine code.
 
 [badges]
 maintenance = { status = "experimental" }
-travis-ci = { repository = "cretonne/cretonne" }
+travis-ci = { repository = "CraneStation/cranelift" }
