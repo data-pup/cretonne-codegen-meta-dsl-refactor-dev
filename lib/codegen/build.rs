@@ -68,12 +68,17 @@ fn main() {
         .arg("-B")
         .arg(build_script)
         .arg("--out-dir")
-        .arg(out_dir)
+        .arg(out_dir.clone())
         .status()
         .expect("Failed to launch second-level build script; is python installed?");
     if !status.success() {
         process::exit(status.code().unwrap());
     }
+
+    // DEVELOPMENT:
+    // Now that the Python build process is complete, generate files that are
+    // emitted by the `cretonne_codegen_meta` crate.
+    meta::gen_types::generate(&out_dir);
 }
 
 fn identify_python() -> &'static str {
