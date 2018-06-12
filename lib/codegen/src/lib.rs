@@ -101,7 +101,6 @@ mod regalloc;
 mod result;
 mod scoped_hash_map;
 mod simple_gvn;
-mod srcgen;
 mod stack_layout;
 mod topo_order;
 mod unreachable_code;
