@@ -14,11 +14,11 @@ struct IndentedScope {
 }
 
 impl IndentedScope {
-    fn enter(&mut self) {
+    fn _enter(&mut self) {
         self.fmt.indent_push();
     }
 
-    fn exit(&mut self) {
+    fn _exit(&mut self) {
         self.fmt.indent_pop();
         if let Some(ref s) = self.after {
             self.fmt.line(Some(&s));
@@ -100,7 +100,7 @@ impl Formatter {
     /// Write all lines to `out`, or stdout if `out` is `None`.
     pub fn writelines(&self, out: Option<&io::Write>) -> Result<(), io::Error> {
         match out {
-            Some(w) => {
+            Some(_w) => {
                 unimplemented!();
                 // FIXUP:
                 // self.lines.iter().map(|line| w.write(line))
@@ -113,7 +113,7 @@ impl Formatter {
     }
 
     /// Write `self.lines` to a file.
-    pub fn update_file(&self, filename: &str, directory: Option<&str>) {
+    pub fn update_file(&self, _filename: &str, _directory: Option<&str>) {
         unimplemented!();
     }
 
@@ -131,7 +131,7 @@ impl Formatter {
     ///
     /// The optional `before` and `after` parameters are surrounding lines
     /// which are *not* indented.
-    pub fn indented(&self, before: Option<&str>, after: Option<&str>) -> IndentedScope {
+    fn indented(&self, _before: Option<&str>, _after: Option<&str>) -> IndentedScope {
         unimplemented!();
     }
 
@@ -192,7 +192,7 @@ impl Formatter {
     ///            some body
     ///        }
     ///    }
-    pub fn add_match(&mut self, m: Match) {
+    fn add_match(&mut self, _m: Match) {
         unimplemented!();
     }
 }
@@ -219,7 +219,7 @@ fn parse_multiline(s: &str) -> Vec<Option<String>> {
     let lines: Vec<String> = s.lines().map(|l| l.replace(" ", &expanded_tab)).collect();
 
     // Determine minimum indentation, ignoring the first line.
-    let min_indent = lines.iter()
+    let _min_indent = lines.iter()
         .map(|l| l.trim_left().len())
         .filter(|&i| i > 0)
         .min();

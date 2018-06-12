@@ -12,12 +12,12 @@ use error;
 use srcgen;
 
 /// Emit definition for all vector types with `bits` total size.
-fn _emit_vectors(fmt: srcgen::Formatter) -> Result<(), error::Error> {
+fn _emit_vectors(_fmt: srcgen::Formatter) -> Result<(), error::Error> {
     unimplemented!();
 }
 
 /// Emit types using the given formatter object.
-fn emit_types(fmt: &srcgen::Formatter) -> Result<(), error::Error> {
+fn emit_types(_fmt: &srcgen::Formatter) -> Result<(), error::Error> {
     unimplemented!();
 }
 
