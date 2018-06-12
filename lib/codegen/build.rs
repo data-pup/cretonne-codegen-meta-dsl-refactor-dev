@@ -18,6 +18,8 @@
 // The build script expects to be run from the directory where this build.rs file lives. The
 // current directory is used to find the sources.
 
+extern crate cretonne_codegen_meta as meta;
+
 use std::env;
 use std::process;
 

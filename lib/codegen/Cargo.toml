@@ -13,7 +13,6 @@ build = "build.rs"
 [dependencies]
 cretonne-codegen-meta = { path = "../codegen-meta", version = "0.13.0" }
 cretonne-entity = { path = "../entity", version = "0.13.0", default-features = false }
-
 failure = { version = "0.1.1", default-features = false, features = ["derive"] }
 failure_derive = { version = "0.1.1", default-features = false }
 hashmap_core = { version = "0.1.8", optional = true }
@@ -22,6 +21,9 @@ target-lexicon = { version = "0.0.2", default-features = false }
 # Please don't add any unless they are essential to the task of creating binary
 # machine code. Integration tests that need external dependencies can be
 # accomodated in `tests`.
+
+[build-dependencies]
+cretonne-codegen-meta = { path = "../codegen-meta", version = "0.8.0" }
 
 [features]
 # The "std" feature enables use of libstd. The "core" feature enables use
