@@ -12,12 +12,12 @@ use error;
 use srcgen;
 
 /// Emit definition for all vector types with `bits` total size.
-fn emit_vectors(fmt: srcgen::Formatter) -> Result<(), error::Error> {
+fn _emit_vectors(fmt: srcgen::Formatter) -> Result<(), error::Error> {
     unimplemented!();
 }
 
 /// Emit types using the given formatter object.
-fn emit_types(fmt: srcgen::Formatter) -> Result<(), error::Error> {
+fn emit_types(fmt: &srcgen::Formatter) -> Result<(), error::Error> {
     unimplemented!();
 }
 
@@ -25,5 +25,8 @@ fn emit_types(fmt: srcgen::Formatter) -> Result<(), error::Error> {
 /// DEVELOPMENT NOTE: This will generate a `new_types.rs` file until complete.
 pub fn generate(out_dir: &str) -> Result<(), error::Error> {
     // TODO: Create a formatter object, call `emit_types`, and update the file.
-    unimplemented!();
+    let fmt = srcgen::Formatter::new();
+    emit_types(&fmt)?;
+    fmt.update_file("new_types.rs", Some(out_dir));
+    Ok(())
 }
