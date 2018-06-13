@@ -11,14 +11,35 @@
 use error;
 use srcgen;
 
+// FIXUP: Placeholder type.
+type ValueType = ();
+
+fn _emit_type(_ty: ValueType, _fmt: &srcgen::Formatter) -> Result<(), error::Error> {
+    unimplemented!();
+}
+
 /// Emit definition for all vector types with `bits` total size.
-fn _emit_vectors(_fmt: srcgen::Formatter) -> Result<(), error::Error> {
+/// FIXUP: How many bits should this be?
+fn emit_vectors(_bits: u16, _fmt: &srcgen::Formatter) -> Result<(), error::Error> {
     unimplemented!();
 }
 
 /// Emit types using the given formatter object.
-fn emit_types(_fmt: &srcgen::Formatter) -> Result<(), error::Error> {
-    unimplemented!();
+fn emit_types(fmt: &srcgen::Formatter) -> Result<(), error::Error> {
+    // for spec in ValueType.all_special_types.iter() {
+    //     emit_type(spec, fmt);
+    // }
+    // for ty in ValueType.all_lane_types.iter() {
+    //     emit_type(ty, fmt);
+    // }
+
+    // Emit vector definitions for common SIMD sizes.
+    emit_vectors(64, fmt)?;
+    emit_vectors(128, fmt)?;
+    emit_vectors(256, fmt)?;
+    emit_vectors(512, fmt)?;
+
+    Ok(())
 }
 
 /// Generate the `types.rs` file.
