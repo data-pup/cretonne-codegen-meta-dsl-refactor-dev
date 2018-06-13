@@ -14,6 +14,7 @@ use srcgen;
 // FIXUP: Placeholder type.
 type ValueType = ();
 
+/// Emit a constant definition of a single value type.
 fn _emit_type(_ty: ValueType, _fmt: &srcgen::Formatter) -> Result<(), error::Error> {
     unimplemented!();
 }
@@ -26,6 +27,8 @@ fn emit_vectors(_bits: u16, _fmt: &srcgen::Formatter) -> Result<(), error::Error
 
 /// Emit types using the given formatter object.
 fn emit_types(fmt: &srcgen::Formatter) -> Result<(), error::Error> {
+    // DEVELOPMENT NOTE: This is the general scaffold, iterate through all
+    // special types, and emit. Repeat for all lane types.
     // for spec in ValueType.all_special_types.iter() {
     //     emit_type(spec, fmt);
     // }
