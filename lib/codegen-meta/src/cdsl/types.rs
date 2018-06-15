@@ -11,20 +11,6 @@
 // in the high 4 bits, giving a range of 2-256 lanes.
 static LANE_BASE: u16 = 0x70;
 
-// DEVELOPMENT NOTE: These were the original inheritance patterns in `types.py`
-// class ValueType(object):
-// class SpecialType(ValueType):
-// class LaneType(ValueType):
-// class VectorType(ValueType):
-// class IntType(LaneType):
-// class FloatType(LaneType):
-// class BoolType(LaneType):
-// class FlagsType(SpecialType):
-// class BVType(ValueType):
-
-// DEVELOPMENT NOTE: ValueType trait might not actually be needed, `gen_types`
-// file only needs to iterate through the special types and lane types?
-
 // ValueType instances (i8, i32, ...) are provided in the `base.types` module.
 
 /// A concrete SSA value type.
