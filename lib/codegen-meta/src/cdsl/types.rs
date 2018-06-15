@@ -42,9 +42,9 @@ struct _VectorType {}
 impl ValueType for _VectorType {}
 
 /// A concrete scalar integer type.
-struct _IntType {}
-impl ValueType for _IntType {}
-impl LaneType for _IntType {}
+pub struct IntType {}
+impl ValueType for IntType {}
+impl LaneType for IntType {}
 
 /// A concrete scalar floating point type.
 struct _FloatType {}
@@ -52,9 +52,9 @@ impl ValueType for _FloatType {}
 impl LaneType for _FloatType {}
 
 /// A concrete scalar boolean type.
-struct _BoolType {}
-impl ValueType for _BoolType {}
-impl LaneType for _BoolType {}
+pub struct BoolType {}
+impl ValueType for BoolType {}
+impl LaneType for BoolType {}
 
 /// A type representing CPU flags.
 ///
