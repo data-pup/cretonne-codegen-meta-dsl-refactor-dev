@@ -7,7 +7,23 @@ pub mod types;
 
 /// Convert the string `s` to CamelCase.
 fn camel_case(s: &str) -> String {
-    unimplemented!();
+    let mut output_chars = String::with_capacity(s.len());
+
+    let mut capitalize = true;
+    for curr_char in s.chars() {
+        if curr_char == '_' {
+            capitalize = true;
+        } else {
+            if capitalize {
+                output_chars.extend(curr_char.to_uppercase());
+            } else {
+                output_chars.push(curr_char);
+            }
+            capitalize = false;
+        }
+    }
+
+    output_chars
 }
 
 /// Check if `x` is a power of two.
@@ -26,4 +42,35 @@ fn next_power_of_two(x: u8) -> u8 {
     }
 
     res + 1
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{camel_case, is_power_of_two, next_power_of_two};
+
+    #[test]
+    fn camel_case_works() {
+        assert_eq!(camel_case("x"), "X");
+        assert_eq!(camel_case("camel_case"), "CamelCase");
+    }
+
+    #[test]
+    fn is_power_of_two_works() {
+        assert_eq!(is_power_of_two(1),true);
+        assert_eq!(is_power_of_two(2),true);
+        assert_eq!(is_power_of_two(4),true);
+        assert_eq!(is_power_of_two(8),true);
+
+        assert_eq!(is_power_of_two(3), false);
+        assert_eq!(is_power_of_two(7), false);
+    }
+
+    #[test]
+    fn next_power_of_two_works() {
+        assert_eq!(next_power_of_two(0), 1);
+        assert_eq!(next_power_of_two(1), 2);
+        assert_eq!(next_power_of_two(2), 4);
+        assert_eq!(next_power_of_two(3), 4);
+        assert_eq!(next_power_of_two(4), 8);
+    }
 }

@@ -15,22 +15,24 @@ use cdsl::types as cdsl_types;
 // i32 = IntType(32)   #: 32-bit int.
 // i64 = IntType(64)   #: 64-bit int.
 
-/// 1-bit boolean.
-static b1: cdsl_types::BoolType = unimplemented!();
-/// 8-bit boolean.
-static b8: cdsl_types::BoolType = unimplemented!();
-/// 16-bit boolean.
-static b16: cdsl_types::BoolType = unimplemented!();
-/// 32-bit boolean.
-static b32: cdsl_types::BoolType = unimplemented!();
-/// 64-bit boolean.
-static b64: cdsl_types::BoolType = unimplemented!();
+// DEVELOPMENT NOTE: Rust drafting below, this is subject to change.
 
-/// 8-bit integer.
-static int8: cdsl_types::IntType = unimplemented!();
-/// 16-bit integer.
-static int16: cdsl_types::IntType = unimplemented!();
-/// 32-bit integer.
-static int32: cdsl_types::IntType = unimplemented!();
-/// 64-bit integer.
-static int64: cdsl_types::IntType = unimplemented!();
+// /// 1-bit boolean.
+// static b1: cdsl_types::BoolType = unimplemented!();
+// /// 8-bit boolean.
+// static b8: cdsl_types::BoolType = unimplemented!();
+// /// 16-bit boolean.
+// static b16: cdsl_types::BoolType = unimplemented!();
+// /// 32-bit boolean.
+// static b32: cdsl_types::BoolType = unimplemented!();
+// /// 64-bit boolean.
+// static b64: cdsl_types::BoolType = unimplemented!();
+
+// /// 8-bit integer.
+// static int8: cdsl_types::IntType = unimplemented!();
+// /// 16-bit integer.
+// static int16: cdsl_types::IntType = unimplemented!();
+// /// 32-bit integer.
+// static int32: cdsl_types::IntType = unimplemented!();
+// /// 64-bit integer.
+// static int64: cdsl_types::IntType = unimplemented!();
