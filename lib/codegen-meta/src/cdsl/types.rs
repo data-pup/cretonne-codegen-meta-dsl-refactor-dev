@@ -37,12 +37,16 @@ trait ValueType {}
 ///
 /// Also tracks a unique set of :py:class:`VectorType` instances with this type
 /// as the lane type.
-trait LaneType {}
+trait LaneType
+where Self: ValueType,
+{}
 
 /// A concrete scalar type that is neither a vector nor a lane type.
 ///
 /// Special types cannot be used to form vectors.
-trait SpecialType {}
+trait SpecialType
+where Self: ValueType,
+{}
 
 /// A concrete SIMD vector type.
 ///
@@ -53,20 +57,24 @@ impl ValueType for _VectorType {}
 
 /// A concrete scalar integer type.
 struct _IntType {}
+impl ValueType for _IntType {}
 impl LaneType for _IntType {}
 
 /// A concrete scalar floating point type.
 struct _FloatType {}
+impl ValueType for _FloatType {}
 impl LaneType for _FloatType {}
 
 /// A concrete scalar boolean type.
 struct _BoolType {}
+impl ValueType for _BoolType {}
 impl LaneType for _BoolType {}
 
 /// A type representing CPU flags.
 ///
 /// Flags can't be stored in memory.
 struct _FlagsType {}
+impl ValueType for _FlagsType {}
 impl SpecialType for _FlagsType {}
 
 /// A flat bitvector type. Used for semantics description only.
