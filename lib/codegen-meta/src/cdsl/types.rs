@@ -93,6 +93,10 @@ impl BoolType {
     pub fn new(bits: u64) -> BoolType {
         BoolType { bits }
     }
+
+    pub fn with_bits(bits: u64) -> BoolType {
+        unimplemented!();
+    }
 }
 
 impl ValueType for BoolType {
