@@ -1,47 +1,28 @@
 //! This module predefines all the Cretonne scalar types.
 
-// use cdsl::types as cdsl_types;
+// DEVELOPMENT NOTE: This might require further revision, this defines the
+// sizes of int and bool scalar types, rather than the types themselves.
 
-// DEVELOPMENT NOTE: Original boolean type definition in Python.
-// #: Boolean.
-// b1 = BoolType(1)    #: 1-bit bool. Type is abstract (can't be stored in mem)
-// b8 = BoolType(8)    #: 8-bit bool.
-// b16 = BoolType(16)  #: 16-bit bool.
-// b32 = BoolType(32)  #: 32-bit bool.
-// b64 = BoolType(64)  #: 64-bit bool.
-
-// DEVELOPMENT NOTE: Enums may be required here?
-pub enum Bools {
+pub enum _Bools {
+    /// 1-bit bool.
     B1 = 1,
+    /// 8-bit bool.
     B8 = 8,
+    /// 16-bit bool.
     B16 = 16,
+    /// 32-bit bool.
     B32 = 32,
+    /// 64-bit bool.
     B64 = 64,
 }
 
-// i8 = IntType(8)     #: 8-bit int.
-// i16 = IntType(16)   #: 16-bit int.
-// i32 = IntType(32)   #: 32-bit int.
-// i64 = IntType(64)   #: 64-bit int.
-
-// DEVELOPMENT NOTE: Rust drafting below, this is subject to change.
-
-// /// 1-bit boolean.
-// static b1: cdsl_types::BoolType = unimplemented!();
-// /// 8-bit boolean.
-// static b8: cdsl_types::BoolType = unimplemented!();
-// /// 16-bit boolean.
-// static b16: cdsl_types::BoolType = unimplemented!();
-// /// 32-bit boolean.
-// static b32: cdsl_types::BoolType = unimplemented!();
-// /// 64-bit boolean.
-// static b64: cdsl_types::BoolType = unimplemented!();
-
-// /// 8-bit integer.
-// static int8: cdsl_types::IntType = unimplemented!();
-// /// 16-bit integer.
-// static int16: cdsl_types::IntType = unimplemented!();
-// /// 32-bit integer.
-// static int32: cdsl_types::IntType = unimplemented!();
-// /// 64-bit integer.
-// static int64: cdsl_types::IntType = unimplemented!();
+pub enum _Ints {
+    /// 8-bit int.
+    I8 = 8,
+    /// 16-bit int.
+    I16 = 16,
+    /// 32-bit int.
+    I32 = 32,
+    /// 64-bit int.
+    I64 = 64,
+}
