@@ -27,25 +27,6 @@ trait ValueType {
     const RUST_NAME: &'static str;
 
     fn rust_name(&self) -> String;
-
-    /// Return the number of bits in a lane.
-    fn lane_bits(&self) -> u64;
-
-    /// Return the number of lanes.
-    fn lane_count(&self) -> u64;
-
-    /// Return the total number of bits of an instance of this type.
-    fn width(&self) -> u64 {
-        self.lane_count() * self.lane_bits()
-    }
-
-    /// Return true iff:
-    ///     1. self and other have equal number of lanes
-    ///     2. each lane in self has at least as many bits as a lane in other
-    fn wider_or_equal<T: ValueType>(&self, rhs: &T) -> bool {
-        (self.lane_count() == rhs.lane_count()) &&
-            (self.lane_bits() >= rhs.lane_bits())
-    }
 }
 
 /// A concrete scalar type that can appear as a vector lane too.
@@ -56,10 +37,24 @@ trait LaneType
 where Self: ValueType,
 {
     /// Return the number of bits in a lane.
-    ///
-    /// FIXUP: This might not make sense here. (Trait bounds could be applied to ValueType methods.)
+    fn lane_bits(&self) -> u64;
+
+    /// Return the number of bits in a lane.
     fn lane_count(&self) -> u64 {
         1
+    }
+
+    /// Return the total number of bits of an instance of this type.
+    fn width(&self) -> u64 {
+        self.lane_count() * self.lane_bits()
+    }
+
+    /// Return true iff:
+    ///     1. self and other have equal number of lanes
+    ///     2. each lane in self has at least as many bits as a lane in other
+    fn wider_or_equal<T: LaneType>(&self, rhs: &T) -> bool {
+        (self.lane_count() == rhs.lane_count()) &&
+            (self.lane_bits() >= rhs.lane_bits())
     }
 }
 
@@ -98,17 +93,6 @@ impl BoolType {
     pub fn new(bits: u64) -> BoolType {
         BoolType { bits }
     }
-
-    /// Return the number of bits in a lane.
-    pub fn lane_bits(&self) -> u64 {
-        self.bits
-    }
-
-    /// FIXUP: Return the boolean type with the given number
-    /// of bits. (Is this aopplicable to the Rust implementation?)
-    fn with_bits(bits: u64) -> BoolType {
-        unimplemented!();
-    }
 }
 
 impl ValueType for BoolType {
@@ -117,20 +101,14 @@ impl ValueType for BoolType {
     fn rust_name(&self) -> String {
         format!("{}{}", RUST_NAME_PREFIX, Self::RUST_NAME.to_uppercase())
     }
+}
 
+impl LaneType for BoolType {
     /// Return the number of bits in a lane.
     fn lane_bits(&self) -> u64 {
         self.bits
     }
-
-    /// Return the number of lanes.
-    fn lane_count(&self) -> u64 {
-        unimplemented!();
-    }
-
 }
-
-impl LaneType for BoolType {}
 
 /// A type representing CPU flags.
 ///

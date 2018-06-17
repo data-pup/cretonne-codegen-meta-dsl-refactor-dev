@@ -11,13 +11,13 @@
 // b64 = BoolType(64)  #: 64-bit bool.
 
 // DEVELOPMENT NOTE: Enums may be required here?
-// pub enum Bools {
-//     B1(u8),
-//     B8(u8),
-//     B16(u16),
-//     B32(u32),
-//     B64(u64),
-// }
+pub enum Bools {
+    B1 = 1,
+    B8 = 8,
+    B16 = 16,
+    B32 = 32,
+    B64 = 64,
+}
 
 // i8 = IntType(8)     #: 8-bit int.
 // i16 = IntType(16)   #: 16-bit int.
