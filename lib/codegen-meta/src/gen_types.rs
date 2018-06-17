@@ -15,8 +15,17 @@ use srcgen;
 type ValueType = ();
 
 /// Emit a constant definition of a single value type.
-fn _emit_type(_ty: ValueType, _fmt: &srcgen::Formatter) -> Result<(), error::Error> {
+fn _emit_type(ty: ValueType, fmt: &srcgen::Formatter) -> Result<(), error::Error> {
     unimplemented!();
+    // TODO: In progress.
+    // let name = ty.name.upper();
+    // fmt.doc_comment(ty.__doc__);
+    // fmt.line(
+    //         "pub const {}: Type = Type({:#x});"
+    //         .format(name, ty.number));
+    // fmt.line();
+
+    // Ok(())
 }
 
 /// Emit definition for all vector types with `bits` total size.
