@@ -54,7 +54,14 @@ trait ValueType {
 /// as the lane type.
 trait LaneType
 where Self: ValueType,
-{}
+{
+    /// Return the number of bits in a lane.
+    ///
+    /// FIXUP: This might not make sense here. (Trait bounds could be applied to ValueType methods.)
+    fn lane_count(&self) -> u64 {
+        1
+    }
+}
 
 /// A concrete scalar type that is neither a vector nor a lane type.
 ///
@@ -71,7 +78,7 @@ struct _VectorType {}
 // impl ValueType for _VectorType {}
 
 /// A concrete scalar integer type.
-pub struct IntType {}
+struct _IntType {}
 // impl ValueType for IntType {}
 // impl LaneType for IntType {}
 
@@ -113,7 +120,7 @@ impl ValueType for BoolType {
 
     /// Return the number of bits in a lane.
     fn lane_bits(&self) -> u64 {
-        unimplemented!();
+        self.bits
     }
 
     /// Return the number of lanes.

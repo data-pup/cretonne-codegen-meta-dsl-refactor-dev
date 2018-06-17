@@ -1,6 +1,6 @@
 //! This module predefines all the Cretonne scalar types.
 
-use cdsl::types as cdsl_types;
+// use cdsl::types as cdsl_types;
 
 // DEVELOPMENT NOTE: Original boolean type definition in Python.
 // #: Boolean.
@@ -9,6 +9,15 @@ use cdsl::types as cdsl_types;
 // b16 = BoolType(16)  #: 16-bit bool.
 // b32 = BoolType(32)  #: 32-bit bool.
 // b64 = BoolType(64)  #: 64-bit bool.
+
+// DEVELOPMENT NOTE: Enums may be required here?
+// pub enum Bools {
+//     B1(u8),
+//     B8(u8),
+//     B16(u16),
+//     B32(u32),
+//     B64(u64),
+// }
 
 // i8 = IntType(8)     #: 8-bit int.
 // i16 = IntType(16)   #: 16-bit int.
