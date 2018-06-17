@@ -247,14 +247,14 @@ fn parse_multiline(s: &str) -> Vec<Option<String>> {
 ///
 /// Note that this class is ignorant of Rust types, and considers two fields
 /// with the same name to be equivalent.
-struct Match {
-    expr: String,
-    arms: BTreeMap<(Vec<String>, String), HashSet<String>>,
+struct Match<'a> {
+    expr: &'a str,
+    arms: BTreeMap<(Vec<&'a str>, &'a str), HashSet<&'a str>>,
 }
 
-impl Match {
+impl<'a> Match<'a> {
     /// Create a new match statemeht on `expr`.
-    fn new(expr: String) -> Match {
+    fn _new(expr: &'a str) -> Match {
         Match {
             expr,
             arms: BTreeMap::new(),
@@ -262,9 +262,24 @@ impl Match {
     }
 
     /// Add an arm to the Match statement.
-    fn arm(&mut self, name: &str, fields: Vec<String>, body: &str) {
-        let key = (fields, body.to_string());
-        let match_arm = self.arms.entry(key).or_insert(HashSet::new());
-        match_arm.insert(name.to_string());
+    fn _arm(&mut self, name: &'a str, fields: Vec<&'a str>, body: &'a str) {
+        // let key = (fields, body);
+        let match_arm = self.arms.entry((fields, body)).or_insert(HashSet::new());
+        match_arm.insert(name);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Match;
+
+    #[test]
+    fn adding_arms_works() {
+        let mut m = Match::_new("x");
+        m._arm("Orange", vec!["a", "b"], "some body");
+        m._arm("Yellow", vec!["a", "b"], "some body");
+        m._arm("Green", vec!["a", "b"], "different body");
+        m._arm("Blue", vec!["x", "y"], "some body");
+        assert_eq!(m.arms.len(), 3);
     }
 }
