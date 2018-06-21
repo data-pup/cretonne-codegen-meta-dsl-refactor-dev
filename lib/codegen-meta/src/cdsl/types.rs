@@ -23,37 +23,29 @@ static RUST_NAME_PREFIX: &'static str = "ir::types::";
 ///
 /// All SSA values have a type that is described by an instance of `ValueType`
 /// or one of its subclasses.
-pub struct ValueType {
-    tag: ValueTypeTag,
-}
-
-impl ValueType {}
-
-/// A tag value denoting what kind of concrete SSA value an instance
-/// of `ValueType` represents.
-pub enum ValueTypeTag {
+pub enum ValueType {
     Lane(LaneType),
-    // Vector()
 }
 
-/// A struct representing a lane.
-pub struct LaneType {
-    element_type: ScalarType,
+impl ValueType {
+    pub fn rust_name(&self) -> String {
+        match self {
+            _ => unimplemented!(),
+        }
+    }
 }
-
-impl LaneType {}
 
 /// The kinds of elements in a lane.
-pub enum ScalarType {
+pub enum LaneType {
     BoolType(Boolean),
 }
 
-impl ScalarType
+impl LaneType
 {
     /// Return the number of bits in a lane.
     fn lane_bits(&self) -> u64 {
         match self {
-            ScalarType::BoolType(b) => b.lane_bits(),
+            LaneType::BoolType(b) => b.lane_bits(),
         }
     }
 
@@ -70,7 +62,7 @@ impl ScalarType
     /// Return true iff:
     ///     1. self and other have equal number of lanes
     ///     2. each lane in self has at least as many bits as a lane in other
-    fn wider_or_equal(&self, rhs: &ScalarType) -> bool {
+    fn wider_or_equal(&self, rhs: &LaneType) -> bool {
         (self.lane_count() == rhs.lane_count()) &&
             (self.lane_bits() >= rhs.lane_bits())
     }
