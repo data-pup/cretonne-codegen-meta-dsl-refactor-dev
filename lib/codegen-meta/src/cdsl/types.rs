@@ -25,16 +25,20 @@ static RUST_NAME_PREFIX: &'static str = "ir::types::";
 /// or one of its subclasses.
 pub enum ValueType {
     Lane(LaneType),
+    BV(BVType),
+    Vector(VectorType),
 }
 
 impl ValueType {
     pub fn rust_name(&self) -> String {
         match self {
+            ValueType::Lane(l) => l.rust_name(),
             _ => unimplemented!(),
         }
     }
 }
 
+/// A concrete scalar type that can appear as a vector lane too.
 pub struct LaneType {
     bits: u64,
     tag: LaneTypeTag,
@@ -116,9 +120,45 @@ impl Integer {
 struct FloatingPoint;
 
 impl FloatingPoint {
-    /// Initialize a new integer type with `n` bits.
+    /// Initialize a new floating point type with `n` bits.
     pub fn new() -> FloatingPoint {
         FloatingPoint
+    }
+}
+
+/// A concrete SIMD vector type.
+///
+/// A vector type has a lane type which is an instance of `LaneType`,
+/// and a positive number of lanes.
+struct VectorType {
+    base: LaneType,
+    lanes: u8,
+}
+
+impl VectorType {
+    /// Initialize a new integer type with `n` bits.
+    pub fn new(base: LaneType, lanes: u8) -> VectorType {
+        VectorType { base, lanes }
+    }
+
+    /// Return the number of lanes.
+    pub fn lane_count(&self) -> u8 {
+        self.lanes
+    }
+
+    /// Return the number of bits in a lane.
+    pub fn lane_bits(&self) -> u64 {
+        self.base.lane_bits()
+    }
+}
+
+/// A flat bitvector type. Used for semantics description only.
+struct BVType;
+
+impl BVType {
+    /// Initialize a new integer type with `n` bits.
+    pub fn new() -> BVType {
+        BVType
     }
 }
 
