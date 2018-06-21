@@ -10,6 +10,7 @@
 
 use error;
 use srcgen;
+use cdsl::types as cdsl_types;
 
 // FIXUP: Placeholder type.
 type ValueType = ();
@@ -29,8 +30,9 @@ fn _emit_type(ty: ValueType, fmt: &srcgen::Formatter) -> Result<(), error::Error
 }
 
 /// Emit definition for all vector types with `bits` total size.
-/// FIXUP: How many bits should this be?
-fn emit_vectors(_bits: u16, _fmt: &srcgen::Formatter) -> Result<(), error::Error> {
+/// FIXUP: What type should `_bits` be defined as?
+fn emit_vectors(bits: u16, _fmt: &srcgen::Formatter) -> Result<(), error::Error> {
+    let _size: u16 = bits / 8;
     unimplemented!();
 }
 
