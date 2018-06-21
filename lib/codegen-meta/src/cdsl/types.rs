@@ -33,18 +33,27 @@ impl ValueType {}
 /// of `ValueType` represents.
 pub enum ValueTypeTag {
     Lane(LaneType),
+    // Vector()
 }
 
-pub enum LaneType {
+/// A struct representing a lane.
+pub struct LaneType {
+    element_type: ScalarType,
+}
+
+impl LaneType {}
+
+/// The kinds of elements in a lane.
+pub enum ScalarType {
     BoolType(Boolean),
 }
 
-impl LaneType
+impl ScalarType
 {
     /// Return the number of bits in a lane.
     fn lane_bits(&self) -> u64 {
         match self {
-            LaneType::BoolType(b) => b.lane_bits(),
+            ScalarType::BoolType(b) => b.lane_bits(),
         }
     }
 
@@ -61,7 +70,7 @@ impl LaneType
     /// Return true iff:
     ///     1. self and other have equal number of lanes
     ///     2. each lane in self has at least as many bits as a lane in other
-    fn wider_or_equal(&self, rhs: &LaneType) -> bool {
+    fn wider_or_equal(&self, rhs: &ScalarType) -> bool {
         (self.lane_count() == rhs.lane_count()) &&
             (self.lane_bits() >= rhs.lane_bits())
     }
@@ -101,41 +110,23 @@ impl Boolean {
 // ///
 // /// Flags can't be stored in memory.
 // struct _FlagsType {}
-// impl ValueType for _FlagsType {}
-// impl SpecialType for _FlagsType {}
-
-
 
 // /// A flat bitvector type. Used for semantics description only.
 // struct _BVType {}
-// impl ValueType for _BVType {}
-
-
 
 // /// A concrete scalar type that is neither a vector nor a lane type.
 // ///
 // /// Special types cannot be used to form vectors.
 // pub struct SpecialType {}
 
-
-
 // /// A concrete SIMD vector type.
 // ///
 // /// A vector type has a lane type which is an instance of :class:`LaneType`,
 // /// and a positive number of lanes.
 // struct _VectorType {}
-// impl ValueType for _VectorType {}
-
-
 
 // /// A concrete scalar integer type.
 // struct _IntType {}
-// impl ValueType for IntType {}
-// impl LaneType for IntType {}
-
-
 
 // /// A concrete scalar floating point type.
-struct _FloatType {}
-// impl ValueType for _FloatType {}
-// impl LaneType for _FloatType {}
+// struct _FloatType {}
