@@ -23,21 +23,30 @@ static RUST_NAME_PREFIX: &'static str = "ir::types::";
 ///
 /// All SSA values have a type that is described by an instance of `ValueType`
 /// or one of its subclasses.
-trait ValueType {
-    const RUST_NAME: &'static str;
-
-    fn rust_name(&self) -> String;
+pub struct ValueType {
+    tag: ValueTypeTag,
 }
 
-/// A concrete scalar type that can appear as a vector lane too.
-///
-/// Also tracks a unique set of :py:class:`VectorType` instances with this type
-/// as the lane type.
-trait LaneType
-where Self: ValueType,
+impl ValueType {}
+
+/// A tag value denoting what kind of concrete SSA value an instance
+/// of `ValueType` represents.
+pub enum ValueTypeTag {
+    Lane(LaneType),
+}
+
+pub enum LaneType {
+    BoolType(Boolean),
+}
+
+impl LaneType
 {
     /// Return the number of bits in a lane.
-    fn lane_bits(&self) -> u64;
+    fn lane_bits(&self) -> u64 {
+        match self {
+            LaneType::BoolType(b) => b.lane_bits(),
+        }
+    }
 
     /// Return the number of bits in a lane.
     fn lane_count(&self) -> u64 {
@@ -52,75 +61,81 @@ where Self: ValueType,
     /// Return true iff:
     ///     1. self and other have equal number of lanes
     ///     2. each lane in self has at least as many bits as a lane in other
-    fn wider_or_equal<T: LaneType>(&self, rhs: &T) -> bool {
+    fn wider_or_equal(&self, rhs: &LaneType) -> bool {
         (self.lane_count() == rhs.lane_count()) &&
             (self.lane_bits() >= rhs.lane_bits())
     }
 }
 
-/// A concrete scalar type that is neither a vector nor a lane type.
-///
-/// Special types cannot be used to form vectors.
-trait SpecialType
-where Self: ValueType,
-{}
-
-/// A concrete SIMD vector type.
-///
-/// A vector type has a lane type which is an instance of :class:`LaneType`,
-/// and a positive number of lanes.
-struct _VectorType {}
-// impl ValueType for _VectorType {}
-
-/// A concrete scalar integer type.
-struct _IntType {}
-// impl ValueType for IntType {}
-// impl LaneType for IntType {}
-
-/// A concrete scalar floating point type.
-struct _FloatType {}
-// impl ValueType for _FloatType {}
-// impl LaneType for _FloatType {}
-
 /// A concrete scalar boolean type.
 #[derive(Debug)]
-pub struct BoolType {
+pub struct Boolean {
     bits: u64,
 }
 
-impl BoolType {
-    /// Initialize a new boolean type with `n` bits.
-    pub fn new(bits: u64) -> BoolType {
-        BoolType { bits }
-    }
-
-    pub fn with_bits(bits: u64) -> BoolType {
-        unimplemented!();
-    }
-}
-
-impl ValueType for BoolType {
+impl Boolean {
     const RUST_NAME: &'static str = "BoolType";
 
-    fn rust_name(&self) -> String {
+    /// Initialize a new boolean type with `n` bits.
+    pub fn new(bits: u64) -> Boolean {
+        Boolean { bits }
+    }
+
+    /// Create a Boolean object with the given number of bits.
+    pub fn with_bits(bits: u64) -> Boolean {
+        unimplemented!();
+    }
+
+    /// Get the name of the type.
+    fn rust_name() -> String {
         format!("{}{}", RUST_NAME_PREFIX, Self::RUST_NAME.to_uppercase())
     }
-}
 
-impl LaneType for BoolType {
-    /// Return the number of bits in a lane.
+    /// Get the number of bits in a lane.
     fn lane_bits(&self) -> u64 {
         self.bits
     }
 }
 
-/// A type representing CPU flags.
-///
-/// Flags can't be stored in memory.
-struct _FlagsType {}
+// /// A type representing CPU flags.
+// ///
+// /// Flags can't be stored in memory.
+// struct _FlagsType {}
 // impl ValueType for _FlagsType {}
 // impl SpecialType for _FlagsType {}
 
-/// A flat bitvector type. Used for semantics description only.
-struct _BVType {}
+
+
+// /// A flat bitvector type. Used for semantics description only.
+// struct _BVType {}
 // impl ValueType for _BVType {}
+
+
+
+// /// A concrete scalar type that is neither a vector nor a lane type.
+// ///
+// /// Special types cannot be used to form vectors.
+// pub struct SpecialType {}
+
+
+
+// /// A concrete SIMD vector type.
+// ///
+// /// A vector type has a lane type which is an instance of :class:`LaneType`,
+// /// and a positive number of lanes.
+// struct _VectorType {}
+// impl ValueType for _VectorType {}
+
+
+
+// /// A concrete scalar integer type.
+// struct _IntType {}
+// impl ValueType for IntType {}
+// impl LaneType for IntType {}
+
+
+
+// /// A concrete scalar floating point type.
+struct _FloatType {}
+// impl ValueType for _FloatType {}
+// impl LaneType for _FloatType {}
