@@ -35,23 +35,39 @@ impl ValueType {
     }
 }
 
-/// The kinds of elements in a lane.
-pub enum LaneType {
-    BoolType(Boolean),
+pub struct LaneType {
+    bits: u64,
+    tag: LaneTypeTag,
 }
 
-impl LaneType
-{
-    /// Return the number of bits in a lane.
-    fn lane_bits(&self) -> u64 {
-        match self {
-            LaneType::BoolType(b) => b.lane_bits(),
-        }
+impl LaneType {
+    /// Create a lane of the type with the given number of bits.
+    pub fn new<T>(bits: u64, t: T) -> LaneType
+    where
+        T: Into<LaneTypeTag>
+    {
+        unimplemented!();
+    }
+
+    /// Get the name of the type.
+    fn rust_name(&self) -> String {
+        let type_name: &'static str = match self.tag {
+            LaneTypeTag::BoolType(_) => "BoolType",
+            LaneTypeTag::IntType(_) => "IntType",
+            LaneTypeTag::FloatType(_) => "FloatType",
+        };
+
+        format!("{}{}", RUST_NAME_PREFIX, type_name.to_uppercase())
     }
 
     /// Return the number of bits in a lane.
     fn lane_count(&self) -> u64 {
         1
+    }
+
+    /// Return the number of bits in a lane.
+    pub fn lane_bits(&self) -> u64 {
+        self.bits
     }
 
     /// Return the total number of bits of an instance of this type.
@@ -68,33 +84,41 @@ impl LaneType
     }
 }
 
-/// A concrete scalar boolean type.
-#[derive(Debug)]
-pub struct Boolean {
-    bits: u64,
+/// The kinds of elements in a lane.
+pub enum LaneTypeTag {
+    BoolType(Boolean),
+    IntType(Integer),
+    FloatType(FloatingPoint),
 }
 
+/// A concrete scalar boolean type.
+#[derive(Debug)]
+pub struct Boolean;
+
 impl Boolean {
-    const RUST_NAME: &'static str = "BoolType";
-
     /// Initialize a new boolean type with `n` bits.
-    pub fn new(bits: u64) -> Boolean {
-        Boolean { bits }
+    pub fn new() -> Boolean {
+        Boolean
     }
+}
 
-    /// Create a Boolean object with the given number of bits.
-    pub fn with_bits(bits: u64) -> Boolean {
-        unimplemented!();
+/// A concrete scalar integer type.
+struct Integer;
+
+impl Integer {
+    /// Initialize a new integer type with `n` bits.
+    pub fn new() -> Integer {
+        Integer
     }
+}
 
-    /// Get the name of the type.
-    fn rust_name() -> String {
-        format!("{}{}", RUST_NAME_PREFIX, Self::RUST_NAME.to_uppercase())
-    }
+/// A concrete scalar floating point type.
+struct FloatingPoint;
 
-    /// Get the number of bits in a lane.
-    fn lane_bits(&self) -> u64 {
-        self.bits
+impl FloatingPoint {
+    /// Initialize a new integer type with `n` bits.
+    pub fn new() -> FloatingPoint {
+        FloatingPoint
     }
 }
 
@@ -116,9 +140,3 @@ impl Boolean {
 // /// A vector type has a lane type which is an instance of :class:`LaneType`,
 // /// and a positive number of lanes.
 // struct _VectorType {}
-
-// /// A concrete scalar integer type.
-// struct _IntType {}
-
-// /// A concrete scalar floating point type.
-// struct _FloatType {}
