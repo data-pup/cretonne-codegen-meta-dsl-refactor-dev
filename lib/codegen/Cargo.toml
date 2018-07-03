@@ -23,7 +23,7 @@ target-lexicon = { version = "0.0.2", default-features = false }
 # accomodated in `tests`.
 
 [build-dependencies]
-cretonne-codegen-meta = { path = "../codegen-meta", version = "0.8.0" }
+cretonne-codegen-meta = { path = "../codegen-meta", version = "0.13.0" }
 
 [features]
 # The "std" feature enables use of libstd. The "core" feature enables use
