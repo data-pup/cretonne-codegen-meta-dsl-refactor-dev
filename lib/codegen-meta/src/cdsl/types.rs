@@ -24,19 +24,33 @@ static RUST_NAME_PREFIX: &'static str = "ir::types::";
 /// All SSA values have a type that is described by an instance of `ValueType`
 /// or one of its subclasses.
 pub enum ValueType {
-    Lane(LaneType),
     BV(BVType),
+    Lane(LaneType),
+    Special(SpecialType),
     Vector(VectorType),
 }
 
 impl ValueType {
+    pub fn all_special_types() -> SpecialTypeIterator {
+        SpecialTypeIterator::new()
+    }
+
     pub fn rust_name(&self) -> String {
         match self {
             ValueType::Lane(l) => l.rust_name(),
+            ValueType::Special(s) => s.rust_name(),
+            _ => unimplemented!(),
+        }
+    }
+
+    pub fn doc(&self) -> String {
+        match self {
+            ValueType::Special(s) => s.doc(),
             _ => unimplemented!(),
         }
     }
 }
+
 
 /// A concrete scalar type that can appear as a vector lane too.
 pub struct LaneType {
@@ -170,10 +184,53 @@ impl BVType {
 // /// A flat bitvector type. Used for semantics description only.
 // struct _BVType {}
 
-// /// A concrete scalar type that is neither a vector nor a lane type.
-// ///
-// /// Special types cannot be used to form vectors.
-// pub struct SpecialType {}
+/// A concrete scalar type that is neither a vector nor a lane type.
+///
+/// Special types cannot be used to form vectors.
+pub struct SpecialType {
+    tag: SpecialTypeTag,
+}
+
+impl SpecialType {
+    pub fn rust_name(&self) -> String {
+        let type_name: &'static str = match self.tag {
+            SpecialTypeTag::Flag(_) => "FlagType",
+            _ => unimplemented!(),
+        };
+
+        format!("{}{}", RUST_NAME_PREFIX, type_name.to_uppercase())
+    }
+
+    pub fn doc(&self) -> String {
+        unimplemented!();
+    }
+}
+
+pub enum SpecialTypeTag {
+    Flag(base_types::Flag),
+}
+
+pub struct SpecialTypeIterator {
+    flag_iter: base_types::FlagIterator,
+}
+
+impl SpecialTypeIterator {
+    fn new() -> Self {
+        Self { flag_iter: base_types::FlagIterator::new() }
+    }
+}
+
+impl Iterator for SpecialTypeIterator {
+    type Item = ValueType;
+    fn next(&mut self) -> Option<Self::Item> {
+        if let Some(flag) = self.flag_iter.next() {
+            let next_item = SpecialType { tag: SpecialTypeTag::Flag(flag) };
+            Some(ValueType::Special(next_item))
+        } else {
+            None
+        }
+    }
+}
 
 // /// A concrete SIMD vector type.
 // ///
