@@ -13,14 +13,14 @@ use srcgen;
 use cdsl::types as cdsl_types;
 
 // FIXUP: Placeholder type.
-type ValueType = ();
+// type ValueType = ();
 
 /// Emit a constant definition of a single value type.
-fn _emit_type(ty: ValueType, fmt: &srcgen::Formatter) -> Result<(), error::Error> {
-    unimplemented!();
+fn emit_type(ty: cdsl_types::ValueType, fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
     // TODO: In progress.
-    // let name = ty.name.upper();
-    // fmt.doc_comment(ty.__doc__);
+    let name = ty.rust_name().to_uppercase();
+    fmt.doc_comment(&ty.doc());
+    unimplemented!();
     // fmt.line(
     //         "pub const {}: Type = Type({:#x});"
     //         .format(name, ty.number));
@@ -37,21 +37,25 @@ fn emit_vectors(bits: u16, _fmt: &srcgen::Formatter) -> Result<(), error::Error>
 }
 
 /// Emit types using the given formatter object.
-fn emit_types(fmt: &srcgen::Formatter) -> Result<(), error::Error> {
-    // DEVELOPMENT NOTE: This is the general scaffold, iterate through all
-    // special types, and emit. Repeat for all lane types.
+fn emit_types(fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
+    // Emit all of the special types, such as types for CPU flags.
+    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    // let mut special_iter = cdsl_types::ValueType::all_special_types();
     // for spec in ValueType.all_special_types.iter() {
-    //     emit_type(spec, fmt);
-    // }
+    for spec in cdsl_types::ValueType::all_special_types() {
+        emit_type(spec, fmt);
+    }
+
+    // Emit all of the lane types, such integers, floats, and booleans.
     // for ty in ValueType.all_lane_types.iter() {
     //     emit_type(ty, fmt);
     // }
 
     // Emit vector definitions for common SIMD sizes.
-    emit_vectors(64, fmt)?;
-    emit_vectors(128, fmt)?;
-    emit_vectors(256, fmt)?;
-    emit_vectors(512, fmt)?;
+    // emit_vectors(64, fmt)?;
+    // emit_vectors(128, fmt)?;
+    // emit_vectors(256, fmt)?;
+    // emit_vectors(512, fmt)?;
 
     Ok(())
 }
@@ -60,8 +64,8 @@ fn emit_types(fmt: &srcgen::Formatter) -> Result<(), error::Error> {
 /// DEVELOPMENT NOTE: This will generate a `new_types.rs` file until complete.
 pub fn generate(out_dir: &str) -> Result<(), error::Error> {
     // TODO: Create a formatter object, call `emit_types`, and update the file.
-    let fmt = srcgen::Formatter::new();
-    emit_types(&fmt)?;
+    let mut fmt = srcgen::Formatter::new();
+    emit_types(&mut fmt)?;
     fmt.update_file("new_types.rs", Some(out_dir));
     Ok(())
 }
