@@ -21,7 +21,7 @@ impl IndentedScope {
     fn _exit(&mut self) {
         self.fmt.indent_pop();
         if let Some(ref s) = self.after {
-            self.fmt.line(Some(&s));
+            self.fmt.line(&s);
         }
     }
 }
@@ -83,12 +83,9 @@ impl Formatter {
     }
 
     /// Add an indented line.
-    pub fn line(&mut self, contents: Option<&str>) {
-        let new_line = match contents {
-            Some(s) => format!("{}{}\n", self.get_indent(), s),
-            None => format!("{}\n", self.get_indent()),
-        };
-        self.lines.push(new_line);
+    pub fn line(&mut self, contents: &str) {
+        let indented_line = format!("{}{}\n", self.get_indent(), contents);
+        self.lines.push(indented_line);
     }
 
     /// Emit a line outdented one level.
@@ -139,31 +136,23 @@ impl Formatter {
 
     /// Add one or more lines after stripping common indentation.
     pub fn multi_line(&mut self, s: &str) {
-        parse_multiline(s).into_iter().for_each(|l| {
-            match l {
-                Some(s) => self.line(Some(s.as_str())),
-                None => self.line(None),
-            }
-        })
+        parse_multiline(s)
+            .into_iter()
+            .for_each(|l| self.line(&l));
     }
 
     /// Add a comment line.
     pub fn comment(&mut self, s: &str) {
         let commented_line = format!("// {}", s);
-        self.line(Some(&commented_line));
+        self.line(&commented_line);
     }
 
     /// Add a (multi-line) documentation comment.
     pub fn doc_comment(&mut self, contents: &str) {
-        for line_contents in parse_multiline(contents) {
-            match line_contents {
-                Some(s) => {
-                    let commented_line = format!("/// {}", s);
-                    self.line(Some(commented_line.as_str()));
-                },
-                None => self.line(Some("///")),
-            };
-        }
+        parse_multiline(contents)
+            .iter()
+            .map(|l| format!("/// {}", l))
+            .for_each(|s| self.line(s.as_str()));
     }
 
     /// FIXUP: Convert example code into Rust.
@@ -213,20 +202,46 @@ fn indent(s: &str) -> Option<usize> {
 /// from PEP 257. This is useful for strings defined with doc strings:
 ///    >>> parse_multiline('\\n    hello\\n    world\\n')
 ///    ['hello', 'world']
-fn parse_multiline(s: &str) -> Vec<Option<String>> {
+fn parse_multiline(s: &str) -> Vec<String> {
     // Convert tabs into spaces.
     let expanded_tab = format!("{:-1$}", " ", SHIFTWIDTH);
-    let lines: Vec<String> = s.lines().map(|l| l.replace(" ", &expanded_tab)).collect();
+    let lines: Vec<String> = s.lines().map(|l| l.replace("\t", &expanded_tab)).collect();
 
     // Determine minimum indentation, ignoring the first line.
-    let _min_indent = lines.iter()
+    let indent = lines.iter()
+        .skip(1)
         .map(|l| l.trim_left().len())
         .filter(|&i| i > 0)
         .min();
 
-    // TODO: Remove indentation (first line is special)
-    // TODO: Strip off trailing and leading blank lines.
-    unimplemented!();
+    // Strip off leading blank lines.
+    let mut lines_iter = lines.iter().skip_while(|l| l.is_empty());
+    let mut trimmed = Vec::with_capacity(lines.len());
+
+    // Remove indentation (first line is special)
+    lines_iter
+        .next()
+        .map(|l| l.trim())
+        .map(|l| l.to_string())
+        .map(|s| trimmed.push(s));
+
+    // Remove trailing whitespace.
+    lines_iter
+        .map(|l| l.trim_right())
+        .map(|l| l.to_string())
+        .map(|s| trimmed.push(s));
+
+    // Strip off trailing blank lines.
+    while let Some(s) = trimmed.pop() {
+        if s.is_empty() {
+            continue;
+        } else {
+            trimmed.push(s);
+            break;
+        }
+    }
+
+    trimmed
 }
 
 /// Match formatting class.
@@ -270,7 +285,7 @@ impl<'a> Match<'a> {
 }
 
 #[cfg(test)]
-mod tests {
+mod match_tests {
     use super::Match;
 
     #[test]
@@ -281,5 +296,23 @@ mod tests {
         m._arm("Green", vec!["a", "b"], "different body");
         m._arm("Blue", vec!["x", "y"], "some body");
         assert_eq!(m.arms.len(), 3);
+    }
+}
+
+#[cfg(test)]
+mod parse_multiline_tests {
+    use super::parse_multiline;
+
+    #[test]
+    fn parse_multiline_works() {
+        let input = "\n    hello\n    world\n";
+        // let expected = vec![Some("hello"), Some("world")];
+        let expected = vec!["hello", "world"];
+            // .iter()
+            // .map(|s| s.to_string())
+            // .map(|s| Some(s))
+            // .collect::<Vec<_>>();
+        let output = parse_multiline(input);
+        assert_eq!(output, expected);
     }
 }
