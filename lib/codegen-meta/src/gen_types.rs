@@ -58,6 +58,6 @@ pub fn generate(out_dir: &str) -> Result<(), error::Error> {
     // TODO: Create a formatter object, call `emit_types`, and update the file.
     let mut fmt = srcgen::Formatter::new();
     emit_types(&mut fmt)?;
-    fmt.update_file("new_types.rs", Some(out_dir));
+    fmt.update_file("new_types.rs", Some(out_dir))?;
     Ok(())
 }
