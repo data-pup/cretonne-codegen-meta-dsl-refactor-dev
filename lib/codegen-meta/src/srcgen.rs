@@ -4,7 +4,9 @@
 //! generating source code.
 
 use std::collections::{BTreeMap, HashSet};
+use std::fs;
 use std::io;
+use std::path;
 
 static SHIFTWIDTH: usize = 4;
 
@@ -110,7 +112,24 @@ impl Formatter {
     }
 
     /// Write `self.lines` to a file.
-    pub fn update_file(&self, _filename: &str, _directory: Option<&str>) {
+    pub fn update_file(&self, filename: &str, directory: Option<&str>) {
+        #[cfg(target_family = "windows")]
+        let sep = "\\";
+        #[cfg(not(target_family = "windows"))]
+        let sep = "/";
+
+        let path_str = if let Some(dir) = directory {
+            format!("{}{}{}", dir, sep, filename)
+        } else {
+            filename.to_string()
+        };
+
+        let path = path::Path::new(&path_str);
+
+        // FIXUP: Remove the `expect`.
+        let f = fs::File::open(path)
+            .expect(&format!("Could not open file named: {}", filename));
+
         unimplemented!();
     }
 
