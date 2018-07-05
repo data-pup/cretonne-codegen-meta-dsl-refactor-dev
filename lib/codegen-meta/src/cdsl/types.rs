@@ -49,6 +49,13 @@ impl ValueType {
             _ => unimplemented!(),
         }
     }
+
+    pub fn number(&self) -> u64 {
+        match self {
+            ValueType::Special(s) => s.number(),
+            _ => unimplemented!(),
+        }
+    }
 }
 
 
@@ -202,7 +209,11 @@ impl SpecialType {
     }
 
     pub fn doc(&self) -> String {
-        unimplemented!();
+        String::from("Hello\nDocumentation!")
+    }
+
+    pub fn number(&self) -> u64 {
+        0 // FIXUP FIXUP FIXUP
     }
 }
 

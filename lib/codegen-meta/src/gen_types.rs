@@ -17,16 +17,11 @@ use cdsl::types as cdsl_types;
 
 /// Emit a constant definition of a single value type.
 fn emit_type(ty: cdsl_types::ValueType, fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
-    // TODO: In progress.
     let name = ty.rust_name().to_uppercase();
     fmt.doc_comment(&ty.doc());
-    unimplemented!();
-    // fmt.line(
-    //         "pub const {}: Type = Type({:#x});"
-    //         .format(name, ty.number));
-    // fmt.line();
+    fmt.line(&format!("pub const {}: Type = Type({:#x});", name, ty.number()));
 
-    // Ok(())
+    Ok(())
 }
 
 /// Emit definition for all vector types with `bits` total size.
@@ -39,9 +34,6 @@ fn emit_vectors(bits: u16, _fmt: &srcgen::Formatter) -> Result<(), error::Error>
 /// Emit types using the given formatter object.
 fn emit_types(fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
     // Emit all of the special types, such as types for CPU flags.
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // let mut special_iter = cdsl_types::ValueType::all_special_types();
-    // for spec in ValueType.all_special_types.iter() {
     for spec in cdsl_types::ValueType::all_special_types() {
         emit_type(spec, fmt);
     }
