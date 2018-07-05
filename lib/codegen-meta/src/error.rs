@@ -1,4 +1,5 @@
 use std::fmt;
+use std::io;
 
 /// An error that occurred when the cretonne_codegen_meta crate was generating
 /// files for the cretonne_codegen crate.
@@ -22,15 +23,23 @@ impl fmt::Display for Error {
     }
 }
 
+impl From<io::Error> for Error {
+    fn from(e: io::Error) -> Self {
+        unimplemented!();
+    }
+}
+
 #[derive(Debug)]
 pub enum ErrorInner {
     Msg(String),
+    IoError(io::Error),
 }
 
 impl fmt::Display for ErrorInner {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             ErrorInner::Msg(s) => write!(f, "{}", s),
+            ErrorInner::IoError(e) => write!(f, "{}", e),
         }
     }
 }

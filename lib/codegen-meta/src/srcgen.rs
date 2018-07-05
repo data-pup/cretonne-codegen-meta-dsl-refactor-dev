@@ -5,8 +5,10 @@
 
 use std::collections::{BTreeMap, HashSet};
 use std::fs;
-use std::io;
+use std::io::{self, Write};
 use std::path;
+
+use error;
 
 static SHIFTWIDTH: usize = 4;
 
@@ -112,7 +114,7 @@ impl Formatter {
     }
 
     /// Write `self.lines` to a file.
-    pub fn update_file(&self, filename: &str, directory: Option<&str>) {
+    pub fn update_file(&self, filename: &str, directory: Option<&str>) -> Result<(), error::Error> {
         #[cfg(target_family = "windows")]
         let sep = "\\";
         #[cfg(not(target_family = "windows"))]
@@ -125,12 +127,13 @@ impl Formatter {
         };
 
         let path = path::Path::new(&path_str);
+        let mut f = fs::File::create(path)?;
 
-        // FIXUP: Remove the `expect`.
-        let f = fs::File::open(path)
-            .expect(&format!("Could not open file named: {}", filename));
+        for l in self.lines.iter().map(|l| l.as_bytes()) {
+            f.write_all(l)?;
+        }
 
-        unimplemented!();
+        Ok(())
     }
 
     /// FIXUP: Convert example code into Rust.
