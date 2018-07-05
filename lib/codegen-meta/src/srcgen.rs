@@ -210,7 +210,7 @@ fn parse_multiline(s: &str) -> Vec<String> {
     // Determine minimum indentation, ignoring the first line.
     let indent = lines.iter()
         .skip(1)
-        .map(|l| l.trim_left().len())
+        .map(|l| l.len() - l.trim_left().len())
         .filter(|&i| i > 0)
         .min();
 
@@ -225,11 +225,15 @@ fn parse_multiline(s: &str) -> Vec<String> {
         .map(|l| l.to_string())
         .map(|s| trimmed.push(s));
 
-    // Remove trailing whitespace.
-    lines_iter
-        .map(|l| l.trim_right())
-        .map(|l| l.to_string())
-        .map(|s| trimmed.push(s));
+    // Remove trailing whitespace from other lines.
+    if let Some(indent) = indent {
+        let mut other_lines = lines_iter
+            .map(|l| &l[indent..])
+            .map(|l| l.trim_right())
+            .map(|l| l.to_string())
+            .collect::<Vec<_>>();
+        trimmed.append(&mut other_lines);
+    }
 
     // Strip off trailing blank lines.
     while let Some(s) = trimmed.pop() {
@@ -306,12 +310,7 @@ mod parse_multiline_tests {
     #[test]
     fn parse_multiline_works() {
         let input = "\n    hello\n    world\n";
-        // let expected = vec![Some("hello"), Some("world")];
         let expected = vec!["hello", "world"];
-            // .iter()
-            // .map(|s| s.to_string())
-            // .map(|s| Some(s))
-            // .collect::<Vec<_>>();
         let output = parse_multiline(input);
         assert_eq!(output, expected);
     }
