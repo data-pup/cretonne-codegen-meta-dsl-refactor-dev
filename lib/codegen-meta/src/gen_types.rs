@@ -32,7 +32,7 @@ fn emit_vectors(bits: u16, _fmt: &srcgen::Formatter) -> Result<(), error::Error>
 fn emit_types(fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
     // Emit all of the special types, such as types for CPU flags.
     for spec in cdsl_types::ValueType::all_special_types() {
-        emit_type(spec, fmt);
+        emit_type(spec, fmt)?;
     }
 
     // Emit all of the lane types, such integers, floats, and booleans.
@@ -53,6 +53,6 @@ fn emit_types(fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
 pub fn generate(filename: &str, out_dir: &str) -> Result<(), error::Error> {
     let mut fmt = srcgen::Formatter::new();
     emit_types(&mut fmt)?;
-    fmt.update_file(filename, Some(out_dir))?;
+    fmt.update_file(filename, out_dir)?;
     Ok(())
 }

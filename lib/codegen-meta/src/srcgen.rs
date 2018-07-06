@@ -114,21 +114,14 @@ impl Formatter {
     }
 
     /// Write `self.lines` to a file.
-    pub fn update_file(&self, filename: &str, directory: Option<&str>) -> Result<(), error::Error> {
+    pub fn update_file(&self, filename: &str, directory: &str) -> Result<(), error::Error> {
         #[cfg(target_family = "windows")]
-        let sep = "\\";
+        let path_str = format!("{}\\{}", directory, filename);
         #[cfg(not(target_family = "windows"))]
-        let sep = "/";
-
-        let path_str = if let Some(dir) = directory {
-            format!("{}{}{}", dir, sep, filename)
-        } else {
-            filename.to_string()
-        };
+        let path_str = format!("{}/{}", directory, filename);
 
         let path = path::Path::new(&path_str);
         let mut f = fs::File::create(path)?;
-
         for l in self.lines.iter().map(|l| l.as_bytes()) {
             f.write_all(l)?;
         }
