@@ -78,10 +78,10 @@ fn main() {
     // DEVELOPMENT:
     // Now that the Python build process is complete, generate files that are
     // emitted by the `cretonne_codegen_meta` crate.
-    meta::gen_types::generate(&out_dir).map_err(|err| {
+    if let Err(err) = meta::gen_types::generate("new_types.rs", &out_dir) {
         eprintln!("Error: {}", err);
         process::exit(1);
-    });
+    };
 }
 
 fn identify_python() -> &'static str {
