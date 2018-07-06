@@ -12,9 +12,6 @@ use error;
 use srcgen;
 use cdsl::types as cdsl_types;
 
-// FIXUP: Placeholder type.
-// type ValueType = ();
-
 /// Emit a constant definition of a single value type.
 fn emit_type(ty: cdsl_types::ValueType, fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
     let name = ty.rust_name().to_uppercase();
@@ -52,12 +49,10 @@ fn emit_types(fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
     Ok(())
 }
 
-/// Generate the `types.rs` file.
-/// DEVELOPMENT NOTE: This will generate a `new_types.rs` file until complete.
-pub fn generate(out_dir: &str) -> Result<(), error::Error> {
-    // TODO: Create a formatter object, call `emit_types`, and update the file.
+/// Generate the types file.
+pub fn generate(filename: &str, out_dir: &str) -> Result<(), error::Error> {
     let mut fmt = srcgen::Formatter::new();
     emit_types(&mut fmt)?;
-    fmt.update_file("new_types.rs", Some(out_dir))?;
+    fmt.update_file(filename, Some(out_dir))?;
     Ok(())
 }
