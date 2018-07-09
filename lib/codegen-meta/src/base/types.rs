@@ -27,17 +27,17 @@ pub enum Int {
     I64 = 64,
 }
 
-struct IntIterator {
+struct _IntIterator {
     index: usize,
 }
 
-impl IntIterator {
-    fn new() -> Self {
+impl _IntIterator {
+    fn _new() -> Self {
         Self { index: 0 }
     }
 }
 
-impl Iterator for IntIterator {
+impl Iterator for _IntIterator {
     type Item = Int;
     fn next(&mut self) -> Option<Self::Item> {
         let res = match self.index {
