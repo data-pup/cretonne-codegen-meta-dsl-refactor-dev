@@ -76,7 +76,11 @@ impl Formatter {
 
     /// Get the current whitespace indentation in the form of a String.
     fn get_indent(&self) -> String {
-        format!("{}{:-1$}", " ", self.indent * SHIFTWIDTH)
+        if self.indent == 0 {
+            String::new()
+        } else {
+            format!("{:-1$}", " ", self.indent * SHIFTWIDTH)
+        }
     }
 
     /// Get a string containing whitespace outdented one level. Used for
@@ -311,6 +315,7 @@ impl<'a> _Match<'a> {
 mod srcgen_tests {
     use super::_Match;
     use super::parse_multiline;
+    use super::Formatter;
 
     #[test]
     fn adding_arms_works() {
@@ -328,5 +333,42 @@ mod srcgen_tests {
         let expected = vec!["hello", "world"];
         let output = parse_multiline(input);
         assert_eq!(output, expected);
+    }
+
+    #[test]
+    fn get_indent_works() {
+        let mut fmt = Formatter::new();
+        let expected_results = vec!["", "    ", "        ", ""];
+
+        let actual_results = Vec::with_capacity(4);
+        (0..3).for_each(|_| {
+            fmt.get_indent();
+            fmt._indent_push();
+        });
+        (0..3).for_each(|_| fmt._indent_pop());
+        fmt.get_indent();
+
+        actual_results
+            .into_iter()
+            .zip(expected_results.into_iter())
+            .for_each(|(actual, expected): (String, &str)| assert_eq!(&actual, expected));
+    }
+
+    #[test]
+    fn fmt_can_add_type_to_lines() {
+        let mut fmt = Formatter::new();
+        fmt.line(&format!("pub const {}: Type = Type({:#x});", "example", 0,));
+        let expected_lines = vec!["pub const example: Type = Type(0x0);\n"];
+        assert_eq!(fmt.lines, expected_lines);
+    }
+
+    #[test]
+    fn fmt_can_add_indented_line() {
+        let mut fmt = Formatter::new();
+        fmt.line("hello");
+        fmt._indent_push();
+        fmt.line("world");
+        let expected_lines = vec!["hello\n", "    world\n"];
+        assert_eq!(fmt.lines, expected_lines);
     }
 }
