@@ -27,7 +27,9 @@ pub enum Int {
     I64 = 64,
 }
 
-struct IntIterator { index: usize }
+struct IntIterator {
+    index: usize,
+}
 
 impl IntIterator {
     fn new() -> Self {
@@ -43,7 +45,7 @@ impl Iterator for IntIterator {
             1 => Some(Int::I16),
             2 => Some(Int::I32),
             3 => Some(Int::I64),
-            _ => None
+            _ => None,
         };
         self.index += 1;
         res
@@ -59,7 +61,9 @@ pub enum Flag {
     FFlag,
 }
 
-pub struct FlagIterator { index: usize }
+pub struct FlagIterator {
+    index: usize,
+}
 
 impl FlagIterator {
     pub fn new() -> Self {

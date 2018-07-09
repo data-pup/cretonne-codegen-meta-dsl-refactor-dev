@@ -8,15 +8,19 @@
 //!
 //! DEVELOPMENT NOTE: This will generate a `new_types.rs` file until complete.
 
+use cdsl::types as cdsl_types;
 use error;
 use srcgen;
-use cdsl::types as cdsl_types;
 
 /// Emit a constant definition of a single value type.
 fn emit_type(ty: cdsl_types::ValueType, fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
     let name = ty.rust_name().to_uppercase();
     fmt.doc_comment(&ty.doc());
-    fmt.line(&format!("pub const {}: Type = Type({:#x});", name, ty.number()));
+    fmt.line(&format!(
+        "pub const {}: Type = Type({:#x});",
+        name,
+        ty.number()
+    ));
 
     Ok(())
 }

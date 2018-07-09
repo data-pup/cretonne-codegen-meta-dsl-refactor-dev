@@ -56,10 +56,10 @@ mod tests {
 
     #[test]
     fn is_power_of_two_works() {
-        assert_eq!(is_power_of_two(1),true);
-        assert_eq!(is_power_of_two(2),true);
-        assert_eq!(is_power_of_two(4),true);
-        assert_eq!(is_power_of_two(8),true);
+        assert_eq!(is_power_of_two(1), true);
+        assert_eq!(is_power_of_two(2), true);
+        assert_eq!(is_power_of_two(4), true);
+        assert_eq!(is_power_of_two(8), true);
 
         assert_eq!(is_power_of_two(3), false);
         assert_eq!(is_power_of_two(7), false);
