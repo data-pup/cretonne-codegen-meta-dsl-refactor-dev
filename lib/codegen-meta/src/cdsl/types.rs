@@ -51,7 +51,7 @@ impl ValueType {
         }
     }
 
-    pub fn doc(&self) -> String {
+    pub fn doc(&self) -> &str {
         match self {
             ValueType::Special(s) => s.doc(),
             _ => unimplemented!(),
@@ -220,8 +220,8 @@ impl SpecialType {
         self.tag.name()
     }
 
-    pub fn doc(&self) -> String {
-        String::from("Hello\nDocumentation!")
+    pub fn doc(&self) -> &str {
+        self.tag.doc()
     }
 
     pub fn number(&self) -> u8 {
@@ -243,6 +243,12 @@ impl SpecialTypeTag {
     pub fn number(&self) -> u8 {
         match self {
             SpecialTypeTag::Flag(f) => f.number(),
+        }
+    }
+
+    pub fn doc(&self) -> &str {
+        match self {
+            SpecialTypeTag::Flag(f) => f.doc(),
         }
     }
 }
