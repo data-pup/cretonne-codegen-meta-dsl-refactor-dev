@@ -250,14 +250,20 @@ fn parse_multiline(s: &str) -> Vec<String> {
         .map(|s| trimmed.push(s));
 
     // Remove trailing whitespace from other lines.
-    if let Some(indent) = indent {
-        let mut other_lines = lines_iter
+    let mut other_lines = if let Some(indent) = indent {
+        lines_iter
             .map(|l| &l[indent..])
             .map(|l| l.trim_right())
             .map(|l| l.to_string())
-            .collect::<Vec<_>>();
-        trimmed.append(&mut other_lines);
-    }
+            .collect::<Vec<_>>()
+    } else {
+        lines_iter
+            .map(|l| l.trim_right())
+            .map(|l| l.to_string())
+            .collect::<Vec<_>>()
+    };
+
+    trimmed.append(&mut other_lines);
 
     // Strip off trailing blank lines.
     while let Some(s) = trimmed.pop() {
@@ -377,7 +383,7 @@ mod srcgen_tests {
     fn fmt_can_add_doc_comments() {
         let mut fmt = Formatter::new();
         fmt.doc_comment("documentation\nis\ngood");
-        let expected_lines = vec!["/// documentation", "/// is", "/// good"];
+        let expected_lines = vec!["/// documentation\n", "/// is\n", "/// good\n"];
         assert_eq!(fmt.lines, expected_lines);
     }
 }
