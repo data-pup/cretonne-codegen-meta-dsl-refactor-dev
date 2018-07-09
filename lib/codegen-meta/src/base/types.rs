@@ -55,10 +55,26 @@ impl Iterator for _IntIterator {
 pub enum Flag {
     /// CPU flags representing the result of an integer comparison. These flags
     /// can be tested with an :type:`intcc` condition code.
-    IFlag,
+    IFlags,
     /// CPU flags representing the result of a floating point comparison. These
     /// flags can be tested with a :type:`floatcc` condition code.
-    FFlag,
+    FFlags,
+}
+
+impl Flag {
+    pub fn name(&self) -> &str {
+        match self {
+            Flag::IFlags => "iflags",
+            Flag::FFlags => "fflags",
+        }
+    }
+
+    pub fn number(&self) -> u8 {
+        match self {
+            Flag::IFlags => 1,
+            Flag::FFlags => 2,
+        }
+    }
 }
 
 pub struct FlagIterator {
@@ -75,8 +91,8 @@ impl Iterator for FlagIterator {
     type Item = Flag;
     fn next(&mut self) -> Option<Self::Item> {
         let res = match self.index {
-            0 => Some(Flag::IFlag),
-            1 => Some(Flag::FFlag),
+            0 => Some(Flag::IFlags),
+            1 => Some(Flag::FFlags),
             _ => None,
         };
         self.index += 1;

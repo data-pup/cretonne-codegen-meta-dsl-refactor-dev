@@ -16,7 +16,7 @@ use base::types as base_types;
 // in the high 4 bits, giving a range of 2-256 lanes.
 static _LANE_BASE: u16 = 0x70;
 
-static RUST_NAME_PREFIX: &'static str = "ir::types::";
+static _RUST_NAME_PREFIX: &'static str = "ir::types::";
 
 // ValueType instances (i8, i32, ...) are provided in the `base.types` module.
 
@@ -36,10 +36,17 @@ impl ValueType {
         SpecialTypeIterator::new()
     }
 
-    pub fn rust_name(&self) -> String {
+    pub fn _rust_name(&self) -> String {
         match self {
-            ValueType::_Lane(l) => l.rust_name(),
-            ValueType::Special(s) => s.rust_name(),
+            ValueType::_Lane(l) => l._rust_name(),
+            ValueType::Special(s) => s._rust_name(),
+            _ => unimplemented!(),
+        }
+    }
+
+    pub fn name(&self) -> &str {
+        match self {
+            ValueType::Special(s) => s.name(),
             _ => unimplemented!(),
         }
     }
@@ -51,7 +58,7 @@ impl ValueType {
         }
     }
 
-    pub fn number(&self) -> u64 {
+    pub fn number(&self) -> u8 {
         match self {
             ValueType::Special(s) => s.number(),
             _ => unimplemented!(),
@@ -62,7 +69,7 @@ impl ValueType {
 /// A concrete scalar type that can appear as a vector lane too.
 pub struct LaneType {
     _bits: u64,
-    tag: LaneTypeTag,
+    _tag: LaneTypeTag,
 }
 
 impl LaneType {
@@ -75,14 +82,14 @@ impl LaneType {
     }
 
     /// Get the name of the type.
-    fn rust_name(&self) -> String {
-        let type_name: &'static str = match self.tag {
+    fn _rust_name(&self) -> String {
+        let type_name: &'static str = match self._tag {
             LaneTypeTag::_BoolType(_) => "BoolType",
             LaneTypeTag::_IntType(_) => "IntType",
             LaneTypeTag::_FloatType(_) => "FloatType",
         };
 
-        format!("{}{}", RUST_NAME_PREFIX, type_name.to_uppercase())
+        format!("{}{}", _RUST_NAME_PREFIX, type_name.to_uppercase())
     }
 
     /// Return the number of bits in a lane.
@@ -201,25 +208,43 @@ pub struct SpecialType {
 }
 
 impl SpecialType {
-    pub fn rust_name(&self) -> String {
+    pub fn _rust_name(&self) -> String {
         let type_name: &'static str = match self.tag {
             SpecialTypeTag::Flag(_) => "FlagType",
         };
 
-        format!("{}{}", RUST_NAME_PREFIX, type_name.to_uppercase())
+        format!("{}{}", _RUST_NAME_PREFIX, type_name.to_uppercase())
+    }
+
+    pub fn name(&self) -> &str {
+        self.tag.name()
     }
 
     pub fn doc(&self) -> String {
         String::from("Hello\nDocumentation!")
     }
 
-    pub fn number(&self) -> u64 {
-        0 // FIXUP FIXUP FIXUP
+    pub fn number(&self) -> u8 {
+        self.tag.number()
     }
 }
 
 pub enum SpecialTypeTag {
     Flag(base_types::Flag),
+}
+
+impl SpecialTypeTag {
+    pub fn name(&self) -> &str {
+        match self {
+            SpecialTypeTag::Flag(f) => f.name(),
+        }
+    }
+
+    pub fn number(&self) -> u8 {
+        match self {
+            SpecialTypeTag::Flag(f) => f.number(),
+        }
+    }
 }
 
 pub struct SpecialTypeIterator {
