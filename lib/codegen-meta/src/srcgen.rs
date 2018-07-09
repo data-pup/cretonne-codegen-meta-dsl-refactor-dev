@@ -32,7 +32,7 @@ impl IndentedScope {
 
 pub struct Formatter {
     indent: usize,
-    lines: Vec<String>
+    lines: Vec<String>,
 }
 
 impl Formatter {
@@ -105,11 +105,11 @@ impl Formatter {
                 unimplemented!();
                 // FIXUP:
                 // self.lines.iter().map(|line| w.write(line))
-            },
+            }
             None => {
                 self.lines.iter().for_each(|line| println!("{}", line));
                 Ok(())
-            },
+            }
         }
     }
 
@@ -151,9 +151,7 @@ impl Formatter {
 
     /// Add one or more lines after stripping common indentation.
     pub fn multi_line(&mut self, s: &str) {
-        parse_multiline(s)
-            .into_iter()
-            .for_each(|l| self.line(&l));
+        parse_multiline(s).into_iter().for_each(|l| self.line(&l));
     }
 
     /// Add a comment line.
@@ -211,7 +209,6 @@ fn indent(s: &str) -> Option<usize> {
     }
 }
 
-
 /// Given a multi-line string, split it into a sequence of lines after
 /// stripping a common indentation, as described in the "trim" function
 /// from PEP 257. This is useful for strings defined with doc strings:
@@ -223,7 +220,8 @@ fn parse_multiline(s: &str) -> Vec<String> {
     let lines: Vec<String> = s.lines().map(|l| l.replace("\t", &expanded_tab)).collect();
 
     // Determine minimum indentation, ignoring the first line.
-    let indent = lines.iter()
+    let indent = lines
+        .iter()
         .skip(1)
         .map(|l| l.len() - l.trim_left().len())
         .filter(|&i| i > 0)

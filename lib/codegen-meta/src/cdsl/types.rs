@@ -58,7 +58,6 @@ impl ValueType {
     }
 }
 
-
 /// A concrete scalar type that can appear as a vector lane too.
 pub struct LaneType {
     bits: u64,
@@ -69,7 +68,7 @@ impl LaneType {
     /// Create a lane of the type with the given number of bits.
     pub fn new<T>(bits: u64, t: T) -> LaneType
     where
-        T: Into<LaneTypeTag>
+        T: Into<LaneTypeTag>,
     {
         unimplemented!();
     }
@@ -104,8 +103,7 @@ impl LaneType {
     ///     1. self and other have equal number of lanes
     ///     2. each lane in self has at least as many bits as a lane in other
     fn wider_or_equal(&self, rhs: &LaneType) -> bool {
-        (self.lane_count() == rhs.lane_count()) &&
-            (self.lane_bits() >= rhs.lane_bits())
+        (self.lane_count() == rhs.lane_count()) && (self.lane_bits() >= rhs.lane_bits())
     }
 }
 
@@ -227,7 +225,9 @@ pub struct SpecialTypeIterator {
 
 impl SpecialTypeIterator {
     fn new() -> Self {
-        Self { flag_iter: base_types::FlagIterator::new() }
+        Self {
+            flag_iter: base_types::FlagIterator::new(),
+        }
     }
 }
 
@@ -235,7 +235,9 @@ impl Iterator for SpecialTypeIterator {
     type Item = ValueType;
     fn next(&mut self) -> Option<Self::Item> {
         if let Some(flag) = self.flag_iter.next() {
-            let next_item = SpecialType { tag: SpecialTypeTag::Flag(flag) };
+            let next_item = SpecialType {
+                tag: SpecialTypeTag::Flag(flag),
+            };
             Some(ValueType::Special(next_item))
         } else {
             None
