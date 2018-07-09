@@ -12,18 +12,18 @@ use error;
 
 static SHIFTWIDTH: usize = 4;
 
-struct IndentedScope {
+struct _IndentedScope {
     fmt: Formatter,
     after: Option<String>,
 }
 
-impl IndentedScope {
+impl _IndentedScope {
     fn _enter(&mut self) {
-        self.fmt.indent_push();
+        self.fmt._indent_push();
     }
 
     fn _exit(&mut self) {
-        self.fmt.indent_pop();
+        self.fmt._indent_pop();
         if let Some(ref s) = self.after {
             self.fmt.line(&s);
         }
@@ -63,13 +63,13 @@ impl Formatter {
     }
 
     /// Increase current indentation level by one.
-    pub fn indent_push(&mut self) {
+    pub fn _indent_push(&mut self) {
         // self.indent = format!("{}{:-2$}", self.indent, " ", SHIFTWIDTH);
         self.indent += 1;
     }
 
     /// Decrease indentation by one level.
-    pub fn indent_pop(&mut self) {
+    pub fn _indent_pop(&mut self) {
         assert!(self.indent > 0, "Already at top level indentation");
         self.indent -= 1;
     }
@@ -81,7 +81,7 @@ impl Formatter {
 
     /// Get a string containing whitespace outdented one level. Used for
     /// lines of code that are inside a single indented block.
-    fn get_outdent(&self) -> String {
+    fn _get_outdent(&self) -> String {
         let outdent_level = self.indent + 1;
         format!("{}{:-1$}", " ", outdent_level * SHIFTWIDTH)
     }
@@ -93,13 +93,13 @@ impl Formatter {
     }
 
     /// Emit a line outdented one level.
-    pub fn outdented_line(&mut self, s: String) {
-        let new_line = format!("{}{}", self.get_outdent(), s);
+    pub fn _outdented_line(&mut self, s: String) {
+        let new_line = format!("{}{}", self._get_outdent(), s);
         self.lines.push(new_line);
     }
 
     /// Write all lines to `out`, or stdout if `out` is `None`.
-    pub fn writelines(&self, out: Option<&io::Write>) -> Result<(), io::Error> {
+    pub fn _writelines(&self, out: Option<&io::Write>) -> Result<(), io::Error> {
         match out {
             Some(_w) => {
                 unimplemented!();
@@ -122,6 +122,12 @@ impl Formatter {
 
         let path = path::Path::new(&path_str);
         let mut f = fs::File::create(path)?;
+
+        // FIXUP
+        for l in self.lines.iter() {
+            println!("{}", l);
+        }
+
         for l in self.lines.iter().map(|l| l.as_bytes()) {
             f.write_all(l)?;
         }
@@ -143,19 +149,19 @@ impl Formatter {
     ///
     /// The optional `before` and `after` parameters are surrounding lines
     /// which are *not* indented.
-    fn indented(&self, _before: Option<&str>, _after: Option<&str>) -> IndentedScope {
+    fn _indented(&self, _before: Option<&str>, _after: Option<&str>) -> _IndentedScope {
         unimplemented!();
     }
 
     // TODO: Should this class implement a format trait?
 
     /// Add one or more lines after stripping common indentation.
-    pub fn multi_line(&mut self, s: &str) {
+    pub fn _multi_line(&mut self, s: &str) {
         parse_multiline(s).into_iter().for_each(|l| self.line(&l));
     }
 
     /// Add a comment line.
-    pub fn comment(&mut self, s: &str) {
+    pub fn _comment(&mut self, s: &str) {
         let commented_line = format!("// {}", s);
         self.line(&commented_line);
     }
@@ -194,13 +200,13 @@ impl Formatter {
     ///            some body
     ///        }
     ///    }
-    fn add_match(&mut self, _m: Match) {
+    fn _add_match(&mut self, _m: _Match) {
         unimplemented!();
     }
 }
 
 /// Compute the indentation of s, or None of an empty line.
-fn indent(s: &str) -> Option<usize> {
+fn _indent(s: &str) -> Option<usize> {
     if s.is_empty() {
         None
     } else {
@@ -279,15 +285,15 @@ fn parse_multiline(s: &str) -> Vec<String> {
 ///
 /// Note that this class is ignorant of Rust types, and considers two fields
 /// with the same name to be equivalent.
-struct Match<'a> {
+struct _Match<'a> {
     expr: &'a str,
     arms: BTreeMap<(Vec<&'a str>, &'a str), HashSet<&'a str>>,
 }
 
-impl<'a> Match<'a> {
+impl<'a> _Match<'a> {
     /// Create a new match statemeht on `expr`.
-    fn _new(expr: &'a str) -> Match {
-        Match {
+    fn _new(expr: &'a str) -> Self {
+        Self {
             expr,
             arms: BTreeMap::new(),
         }
@@ -303,22 +309,18 @@ impl<'a> Match<'a> {
 
 #[cfg(test)]
 mod match_tests {
-    use super::Match;
+    use super::_Match;
+    use super::parse_multiline;
 
     #[test]
     fn adding_arms_works() {
-        let mut m = Match::_new("x");
+        let mut m = _Match::_new("x");
         m._arm("Orange", vec!["a", "b"], "some body");
         m._arm("Yellow", vec!["a", "b"], "some body");
         m._arm("Green", vec!["a", "b"], "different body");
         m._arm("Blue", vec!["x", "y"], "some body");
         assert_eq!(m.arms.len(), 3);
     }
-}
-
-#[cfg(test)]
-mod parse_multiline_tests {
-    use super::parse_multiline;
 
     #[test]
     fn parse_multiline_works() {

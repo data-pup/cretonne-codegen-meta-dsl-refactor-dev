@@ -6,7 +6,7 @@
 pub mod types;
 
 /// Convert the string `s` to CamelCase.
-fn camel_case(s: &str) -> String {
+fn _camel_case(s: &str) -> String {
     let mut output_chars = String::with_capacity(s.len());
 
     let mut capitalize = true;
@@ -28,12 +28,12 @@ fn camel_case(s: &str) -> String {
 
 /// Check if `x` is a power of two.
 /// TODO: This might need to be generic.
-fn is_power_of_two(x: u8) -> bool {
+fn _is_power_of_two(x: u8) -> bool {
     x > 0 && x & (x - 1) == 0
 }
 
 /// Compute the next power of two that is greater than `x`.
-fn next_power_of_two(x: u8) -> u8 {
+fn _next_power_of_two(x: u8) -> u8 {
     let mut s = 1;
     let mut res = x;
     while res & (res + 1) != 0 {
@@ -46,7 +46,9 @@ fn next_power_of_two(x: u8) -> u8 {
 
 #[cfg(test)]
 mod tests {
-    use super::{camel_case, is_power_of_two, next_power_of_two};
+    use super::_camel_case as camel_case;
+    use super::_is_power_of_two as is_power_of_two;
+    use super::_next_power_of_two as next_power_of_two;
 
     #[test]
     fn camel_case_works() {

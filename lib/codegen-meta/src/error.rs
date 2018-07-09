@@ -24,7 +24,7 @@ impl fmt::Display for Error {
 }
 
 impl From<io::Error> for Error {
-    fn from(e: io::Error) -> Self {
+    fn from(_e: io::Error) -> Self {
         unimplemented!();
     }
 }
