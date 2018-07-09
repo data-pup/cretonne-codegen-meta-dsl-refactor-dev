@@ -69,6 +69,15 @@ impl Flag {
         }
     }
 
+    pub fn doc(&self) -> &str {
+        match self {
+            Flag::IFlags => "CPU flags representing the result of an integer comparison. These flags can be tested with an :type:`intcc` condition code.
+            ",
+            Flag::FFlags => "CPU flags representing the result of a floating point comparison. These flags can be tested with a :type:`floatcc` condition code.
+            ",
+        }
+    }
+
     pub fn number(&self) -> u8 {
         match self {
             Flag::IFlags => 1,
