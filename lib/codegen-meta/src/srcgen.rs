@@ -308,7 +308,7 @@ impl<'a> _Match<'a> {
 }
 
 #[cfg(test)]
-mod match_tests {
+mod srcgen_tests {
     use super::_Match;
     use super::parse_multiline;
 
