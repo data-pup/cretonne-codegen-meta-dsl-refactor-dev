@@ -286,7 +286,7 @@ fn parse_multiline(s: &str) -> Vec<String> {
 /// Note that this class is ignorant of Rust types, and considers two fields
 /// with the same name to be equivalent.
 struct _Match<'a> {
-    expr: &'a str,
+    _expr: &'a str,
     arms: BTreeMap<(Vec<&'a str>, &'a str), HashSet<&'a str>>,
 }
 
@@ -294,7 +294,7 @@ impl<'a> _Match<'a> {
     /// Create a new match statemeht on `expr`.
     fn _new(expr: &'a str) -> Self {
         Self {
-            expr,
+            _expr: expr,
             arms: BTreeMap::new(),
         }
     }
