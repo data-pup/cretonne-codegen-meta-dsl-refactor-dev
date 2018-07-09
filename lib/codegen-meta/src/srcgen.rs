@@ -372,4 +372,12 @@ mod srcgen_tests {
         let expected_lines = vec!["hello\n", "    world\n"];
         assert_eq!(fmt.lines, expected_lines);
     }
+
+    #[test]
+    fn fmt_can_add_doc_comments() {
+        let mut fmt = Formatter::new();
+        fmt.doc_comment("documentation\nis\ngood");
+        let expected_lines = vec!["/// documentation", "/// is", "/// good"];
+        assert_eq!(fmt.lines, expected_lines);
+    }
 }
