@@ -64,7 +64,6 @@ impl Formatter {
 
     /// Increase current indentation level by one.
     pub fn _indent_push(&mut self) {
-        // self.indent = format!("{}{:-2$}", self.indent, " ", SHIFTWIDTH);
         self.indent += 1;
     }
 
@@ -85,9 +84,11 @@ impl Formatter {
 
     /// Get a string containing whitespace outdented one level. Used for
     /// lines of code that are inside a single indented block.
-    fn _get_outdent(&self) -> String {
-        let outdent_level = self.indent + 1;
-        format!("{}{:-1$}", " ", outdent_level * SHIFTWIDTH)
+    fn _get_outdent(&mut self) -> String {
+        self._indent_push();
+        let s = self.get_indent();
+        self._indent_pop();
+        s
     }
 
     /// Add an indented line.
