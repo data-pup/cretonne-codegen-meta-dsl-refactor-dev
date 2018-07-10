@@ -5,17 +5,6 @@
 
 use base::types as base_types;
 
-// Numbering scheme for value types:
-//
-// 0: Void
-// 0x01-0x6f: Special types
-// 0x70-0x7f: Lane types
-// 0x80-0xff: Vector types
-//
-// Vector types are encoded with the lane type in the low 4 bits and log2(lanes)
-// in the high 4 bits, giving a range of 2-256 lanes.
-static _LANE_BASE: u16 = 0x70;
-
 static _RUST_NAME_PREFIX: &'static str = "ir::types::";
 
 // ValueType instances (i8, i32, ...) are provided in the `base.types` module.
@@ -26,7 +15,7 @@ static _RUST_NAME_PREFIX: &'static str = "ir::types::";
 /// or one of its subclasses.
 pub enum ValueType {
     _BV(_BVType),
-    _Lane(LaneType),
+    Lane(LaneType),
     Special(SpecialType),
     _Vector(VectorType),
 }
@@ -36,9 +25,13 @@ impl ValueType {
         SpecialTypeIterator::new()
     }
 
+    pub fn all_lane_types() -> LaneTypeIterator {
+        LaneTypeIterator::new()
+    }
+
     pub fn _rust_name(&self) -> String {
         match self {
-            ValueType::_Lane(l) => l._rust_name(),
+            ValueType::Lane(l) => l._rust_name(),
             ValueType::Special(s) => s._rust_name(),
             _ => unimplemented!(),
         }
@@ -46,6 +39,7 @@ impl ValueType {
 
     pub fn name(&self) -> &str {
         match self {
+            ValueType::Lane(l) => l.name(),
             ValueType::Special(s) => s.name(),
             _ => unimplemented!(),
         }
@@ -53,6 +47,7 @@ impl ValueType {
 
     pub fn doc(&self) -> &str {
         match self {
+            ValueType::Lane(l) => l.doc(),
             ValueType::Special(s) => s.doc(),
             _ => unimplemented!(),
         }
@@ -60,6 +55,7 @@ impl ValueType {
 
     pub fn number(&self) -> u8 {
         match self {
+            ValueType::Lane(l) => l.number(),
             ValueType::Special(s) => s.number(),
             _ => unimplemented!(),
         }
@@ -92,6 +88,18 @@ impl LaneType {
         format!("{}{}", _RUST_NAME_PREFIX, type_name.to_uppercase())
     }
 
+    pub fn name(&self) -> &str {
+        self._tag.name()
+    }
+
+    pub fn doc(&self) -> &str {
+        self._tag.doc()
+    }
+
+    pub fn number(&self) -> u8 {
+        self._tag.number()
+    }
+
     /// Return the number of bits in a lane.
     fn _lane_count(&self) -> u64 {
         1
@@ -117,19 +125,58 @@ impl LaneType {
 
 /// The kinds of elements in a lane.
 pub enum LaneTypeTag {
-    _BoolType(Boolean),
+    _BoolType(base_types::Bool),
     _IntType(Integer),
     _FloatType(FloatingPoint),
 }
 
-/// A concrete scalar boolean type.
-#[derive(Debug)]
-pub struct Boolean;
+impl LaneTypeTag {
+    fn name(&self) -> &str {
+        match self {
+            LaneTypeTag::_BoolType(b) => b.name(),
+            _ => unimplemented!(),
+        }
+    }
 
-impl Boolean {
-    /// Initialize a new boolean type with `n` bits.
-    pub fn _new() -> Self {
-        Self {}
+    fn doc(&self) -> &str {
+        match self {
+            LaneTypeTag::_BoolType(b) => b.doc(),
+            _ => unimplemented!(),
+        }
+    }
+
+    fn number(&self) -> u8 {
+        match self {
+            LaneTypeTag::_BoolType(b) => b.number(),
+            _ => unimplemented!(),
+        }
+    }
+}
+
+pub struct LaneTypeIterator {
+    bool_iter: base_types::BoolIterator,
+}
+
+impl LaneTypeIterator {
+    fn new() -> Self {
+        Self {
+            bool_iter: base_types::BoolIterator::new(),
+        }
+    }
+}
+
+impl Iterator for LaneTypeIterator {
+    type Item = ValueType;
+    fn next(&mut self) -> Option<Self::Item> {
+        if let Some(b) = self.bool_iter.next() {
+            let next = LaneType {
+                _bits: b as u64,
+                _tag: LaneTypeTag::_BoolType(b),
+            };
+            Some(ValueType::Lane(next))
+        } else {
+            None
+        }
     }
 }
 
@@ -209,11 +256,7 @@ pub struct SpecialType {
 
 impl SpecialType {
     pub fn _rust_name(&self) -> String {
-        let type_name: &'static str = match self.tag {
-            SpecialTypeTag::Flag(_) => "FlagType",
-        };
-
-        format!("{}{}", _RUST_NAME_PREFIX, type_name.to_uppercase())
+        format!("{}{}", _RUST_NAME_PREFIX, self.name().to_uppercase())
     }
 
     pub fn name(&self) -> &str {
@@ -268,11 +311,11 @@ impl SpecialTypeIterator {
 impl Iterator for SpecialTypeIterator {
     type Item = ValueType;
     fn next(&mut self) -> Option<Self::Item> {
-        if let Some(flag) = self.flag_iter.next() {
-            let next_item = SpecialType {
-                tag: SpecialTypeTag::Flag(flag),
+        if let Some(f) = self.flag_iter.next() {
+            let next = SpecialType {
+                tag: SpecialTypeTag::Flag(f),
             };
-            Some(ValueType::Special(next_item))
+            Some(ValueType::Special(next))
         } else {
             None
         }
