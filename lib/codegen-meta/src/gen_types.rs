@@ -40,9 +40,9 @@ fn emit_types(fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
     }
 
     // Emit all of the lane types, such integers, floats, and booleans.
-    // for ty in ValueType.all_lane_types.iter() {
-    //     emit_type(ty, fmt);
-    // }
+    for ty in cdsl_types::ValueType::all_lane_types() {
+        emit_type(ty, fmt)?;
+    }
 
     // Emit vector definitions for common SIMD sizes.
     // emit_vectors(64, fmt)?;
