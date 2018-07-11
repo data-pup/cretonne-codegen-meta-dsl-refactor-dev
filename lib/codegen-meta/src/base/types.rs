@@ -66,11 +66,6 @@ impl Bool {
 
         _LANE_BASE + offset
     }
-
-    /// Get the boolean variant that corresponds to a given number.
-    pub fn _by_number(_i: u8) -> Option<Flag> {
-        unimplemented!()
-    }
 }
 
 pub struct BoolIterator {
@@ -99,6 +94,7 @@ impl Iterator for BoolIterator {
     }
 }
 
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum Int {
     /// 8-bit int.
     I8 = 8,
@@ -110,17 +106,34 @@ pub enum Int {
     I64 = 64,
 }
 
-struct _IntIterator {
+impl Int {
+    /// Get the name of a integer variant.
+    pub fn name(&self) -> &str {
+        unimplemented!();
+    }
+
+    /// Get the documentation comment of a integer variant.
+    pub fn doc(&self) -> &str {
+        unimplemented!();
+    }
+
+    /// Get the number of a integer variant.
+    pub fn number(&self) -> u8 {
+        unimplemented!();
+    }
+}
+
+pub struct IntIterator {
     index: usize,
 }
 
-impl _IntIterator {
-    fn _new() -> Self {
+impl IntIterator {
+    pub fn new() -> Self {
         Self { index: 0 }
     }
 }
 
-impl Iterator for _IntIterator {
+impl Iterator for IntIterator {
     type Item = Int;
     fn next(&mut self) -> Option<Self::Item> {
         let res = match self.index {
@@ -135,6 +148,7 @@ impl Iterator for _IntIterator {
     }
 }
 
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum Flag {
     /// CPU flags from an integer comparison.
     IFlags,
@@ -200,5 +214,39 @@ impl Iterator for FlagIterator {
         };
         self.index += 1;
         res
+    }
+}
+
+#[cfg(test)]
+mod iter_tests {
+    use super::*;
+
+    #[test]
+    fn bool_iter_works() {
+        let mut bool_iter = BoolIterator::new();
+        assert_eq!(bool_iter.next(), Some(Bool::B1));
+        assert_eq!(bool_iter.next(), Some(Bool::B8));
+        assert_eq!(bool_iter.next(), Some(Bool::B16));
+        assert_eq!(bool_iter.next(), Some(Bool::B32));
+        assert_eq!(bool_iter.next(), Some(Bool::B64));
+        assert_eq!(bool_iter.next(), None);
+    }
+
+    #[test]
+    fn int_iter_works() {
+        let mut int_iter = IntIterator::new();
+        assert_eq!(int_iter.next(), Some(Int::I8));
+        assert_eq!(int_iter.next(), Some(Int::I16));
+        assert_eq!(int_iter.next(), Some(Int::I32));
+        assert_eq!(int_iter.next(), Some(Int::I64));
+        assert_eq!(int_iter.next(), None);
+    }
+
+    #[test]
+    fn flag_iter_works() {
+        let mut flag_iter = FlagIterator::new();
+        assert_eq!(flag_iter.next(), Some(Flag::IFlags));
+        assert_eq!(flag_iter.next(), Some(Flag::FFlags));
+        assert_eq!(flag_iter.next(), None);
     }
 }
