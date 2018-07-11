@@ -145,6 +145,56 @@ impl Iterator for IntIterator {
 }
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
+pub enum Float {
+    F32 = 32,
+    F64 = 64,
+}
+
+impl Float {
+    /// Get the name of a float variant.
+    pub fn name(&self) -> &str {
+        match self {
+            Float::F32 => "F32",
+            Float::F64 => "F64",
+        }
+    }
+
+    /// Get the number of a flag variant.
+    pub fn number(&self) -> u8 {
+        let offset = 9 + match self {
+            Float::F32 => 0,
+            Float::F64 => 1,
+        };
+
+        _LANE_BASE + offset
+    }
+}
+
+/// Iterator through the variants of the Float enum.
+pub struct FloatIterator {
+    index: usize,
+}
+
+impl FloatIterator {
+    pub fn new() -> Self {
+        Self { index: 0 }
+    }
+}
+
+impl Iterator for FloatIterator {
+    type Item = Float;
+    fn next(&mut self) -> Option<Self::Item> {
+        let res = match self.index {
+            0 => Some(Float::F32),
+            1 => Some(Float::F64),
+            _ => None,
+        };
+        self.index += 1;
+        res
+    }
+}
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum Flag {
     /// CPU flags from an integer comparison.
     IFlags,
@@ -234,5 +284,13 @@ mod iter_tests {
         assert_eq!(flag_iter.next(), Some(Flag::IFlags));
         assert_eq!(flag_iter.next(), Some(Flag::FFlags));
         assert_eq!(flag_iter.next(), None);
+    }
+
+    #[test]
+    fn float_iter_works() {
+        let mut float_iter = FloatIterator::new();
+        assert_eq!(float_iter.next(), Some(Float::F32));
+        assert_eq!(float_iter.next(), Some(Float::F64));
+        assert_eq!(float_iter.next(), None);
     }
 }
