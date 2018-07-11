@@ -109,17 +109,34 @@ pub enum Int {
 impl Int {
     /// Get the name of a integer variant.
     pub fn name(&self) -> &str {
-        unimplemented!();
+        match self {
+            Int::I8 => "I8",
+            Int::I16 => "I16",
+            Int::I32 => "I32",
+            Int::I64 => "I64",
+        }
     }
 
     /// Get the documentation comment of a integer variant.
     pub fn doc(&self) -> &str {
-        unimplemented!();
+        match self {
+            Int::I8 => "An integer type with 8 bits.",
+            Int::I16 => "An integer type with 16 bits.",
+            Int::I32 => "An integer type with 32 bits.",
+            Int::I64 => "An integer type with 64 bits.",
+        }
     }
 
     /// Get the number of a integer variant.
     pub fn number(&self) -> u8 {
-        unimplemented!();
+        let offset = 5 + match self {
+            Int::I8 => 0,
+            Int::I16 => 1,
+            Int::I32 => 2,
+            Int::I64 => 3,
+        };
+
+        _LANE_BASE + offset
     }
 }
 
