@@ -95,8 +95,9 @@ impl LaneType {
     pub fn doc(&self) -> String {
         match self._tag {
             LaneTypeTag::_BoolType(_) => format!("A boolean type with {} bits.", self._bits),
-            LaneTypeTag::_IntType(_) =>  format!("An integer type with {} bits.", self._bits),
-            _ => unimplemented!(),
+            LaneTypeTag::_IntType(_) => format!("An integer type with {} bits.", self._bits),
+            LaneTypeTag::_FloatType(base_types::Float::F32) => String::from("A 32-bit floating point type represented in the IEEE 754-2008 *binary32* interchange format. This corresponds to the :c:type:`float` type in most C implementations."),
+            LaneTypeTag::_FloatType(base_types::Float::F64) => String::from("A 64-bit floating point type represented in the IEEE 754-2008 *binary64* interchange format. This corresponds to the :c:type:`double` type in most C implementations.")
         }
     }
 
@@ -131,7 +132,7 @@ impl LaneType {
 pub enum LaneTypeTag {
     _BoolType(base_types::Bool),
     _IntType(base_types::Int),
-    _FloatType(FloatingPoint),
+    _FloatType(base_types::Float),
 }
 
 impl LaneTypeTag {
@@ -139,7 +140,7 @@ impl LaneTypeTag {
         match self {
             LaneTypeTag::_BoolType(b) => b.name(),
             LaneTypeTag::_IntType(i) => i.name(),
-            _ => unimplemented!(),
+            LaneTypeTag::_FloatType(f) => f.name(),
         }
     }
 
@@ -147,7 +148,7 @@ impl LaneTypeTag {
         match self {
             LaneTypeTag::_BoolType(b) => b.number(),
             LaneTypeTag::_IntType(i) => i.number(),
-            _ => unimplemented!(),
+            LaneTypeTag::_FloatType(f) => f.number(),
         }
     }
 }
@@ -155,6 +156,7 @@ impl LaneTypeTag {
 pub struct LaneTypeIterator {
     bool_iter: base_types::BoolIterator,
     int_iter: base_types::IntIterator,
+    float_iter: base_types::FloatIterator,
 }
 
 impl LaneTypeIterator {
@@ -162,6 +164,7 @@ impl LaneTypeIterator {
         Self {
             bool_iter: base_types::BoolIterator::new(),
             int_iter: base_types::IntIterator::new(),
+            float_iter: base_types::FloatIterator::new(),
         }
     }
 }
@@ -181,19 +184,15 @@ impl Iterator for LaneTypeIterator {
                 _tag: LaneTypeTag::_IntType(i),
             };
             Some(ValueType::Lane(next))
+        } else if let Some(f) = self.float_iter.next() {
+            let next = LaneType {
+                _bits: f as u64,
+                _tag: LaneTypeTag::_FloatType(f),
+            };
+            Some(ValueType::Lane(next))
         } else {
             None
         }
-    }
-}
-
-/// A concrete scalar floating point type.
-pub struct FloatingPoint;
-
-impl FloatingPoint {
-    /// Initialize a new floating point type with `n` bits.
-    pub fn _new() -> Self {
-        Self {}
     }
 }
 
