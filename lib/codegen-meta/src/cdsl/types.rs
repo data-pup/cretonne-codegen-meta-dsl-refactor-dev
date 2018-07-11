@@ -45,7 +45,7 @@ impl ValueType {
         }
     }
 
-    pub fn doc(&self) -> &str {
+    pub fn doc(&self) -> String {
         match self {
             ValueType::Lane(l) => l.doc(),
             ValueType::Special(s) => s.doc(),
@@ -92,8 +92,12 @@ impl LaneType {
         self._tag.name()
     }
 
-    pub fn doc(&self) -> &str {
-        self._tag.doc()
+    pub fn doc(&self) -> String {
+        match self._tag {
+            LaneTypeTag::_BoolType(_) => format!("A boolean type with {} bits.", self._bits),
+            LaneTypeTag::_IntType(_) =>  format!("An integer type with {} bits.", self._bits),
+            _ => unimplemented!(),
+        }
     }
 
     pub fn number(&self) -> u8 {
@@ -135,14 +139,6 @@ impl LaneTypeTag {
         match self {
             LaneTypeTag::_BoolType(b) => b.name(),
             LaneTypeTag::_IntType(i) => i.name(),
-            _ => unimplemented!(),
-        }
-    }
-
-    fn doc(&self) -> &str {
-        match self {
-            LaneTypeTag::_BoolType(b) => b.doc(),
-            LaneTypeTag::_IntType(i) => i.doc(),
             _ => unimplemented!(),
         }
     }
@@ -264,8 +260,13 @@ impl SpecialType {
         self.tag.name()
     }
 
-    pub fn doc(&self) -> &str {
-        self.tag.doc()
+    pub fn doc(&self) -> String {
+        match self.tag {
+            SpecialTypeTag::Flag(base_types::Flag::IFlags) => String::from("CPU flags representing the result of an integer comparison. These flags can be tested with an :type:`intcc` condition code.
+            "),
+            SpecialTypeTag::Flag(base_types::Flag::FFlags) => String::from("CPU flags representing the result of a floating point comparison. These flags can be tested with a :type:`floatcc` condition code.
+            "),
+        }
     }
 
     pub fn number(&self) -> u8 {
@@ -287,12 +288,6 @@ impl SpecialTypeTag {
     pub fn number(&self) -> u8 {
         match self {
             SpecialTypeTag::Flag(f) => f.number(),
-        }
-    }
-
-    pub fn doc(&self) -> &str {
-        match self {
-            SpecialTypeTag::Flag(f) => f.doc(),
         }
     }
 }
