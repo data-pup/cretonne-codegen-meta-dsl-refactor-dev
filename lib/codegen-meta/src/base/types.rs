@@ -43,17 +43,6 @@ impl Bool {
         }
     }
 
-    /// Get the documentation comment of a boolean variant.
-    pub fn doc(&self) -> &str {
-        match self {
-            Bool::B1 => "A boolean type with 1 bits.",
-            Bool::B8 => "A boolean type with 8 bits.",
-            Bool::B16 => "A boolean type with 16 bits.",
-            Bool::B32 => "A boolean type with 32 bits.",
-            Bool::B64 => "A boolean type with 64 bits.",
-        }
-    }
-
     /// Get the number of a boolean variant.
     pub fn number(&self) -> u8 {
         let offset = match self {
@@ -117,16 +106,6 @@ impl Int {
         }
     }
 
-    /// Get the documentation comment of a integer variant.
-    pub fn doc(&self) -> &str {
-        match self {
-            Int::I8 => "An integer type with 8 bits.",
-            Int::I16 => "An integer type with 16 bits.",
-            Int::I32 => "An integer type with 32 bits.",
-            Int::I64 => "An integer type with 64 bits.",
-        }
-    }
-
     /// Get the number of a integer variant.
     pub fn number(&self) -> u8 {
         let offset = 5 + match self {
@@ -179,16 +158,6 @@ impl Flag {
         match self {
             Flag::IFlags => "iflags",
             Flag::FFlags => "fflags",
-        }
-    }
-
-    /// Get the documentation comment of a flag variant.
-    pub fn doc(&self) -> &str {
-        match self {
-            Flag::IFlags => "CPU flags representing the result of an integer comparison. These flags can be tested with an :type:`intcc` condition code.
-            ",
-            Flag::FFlags => "CPU flags representing the result of a floating point comparison. These flags can be tested with a :type:`floatcc` condition code.
-            ",
         }
     }
 
