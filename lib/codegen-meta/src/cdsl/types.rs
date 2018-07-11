@@ -126,7 +126,7 @@ impl LaneType {
 /// The kinds of elements in a lane.
 pub enum LaneTypeTag {
     _BoolType(base_types::Bool),
-    _IntType(Integer),
+    _IntType(base_types::Int),
     _FloatType(FloatingPoint),
 }
 
@@ -134,6 +134,7 @@ impl LaneTypeTag {
     fn name(&self) -> &str {
         match self {
             LaneTypeTag::_BoolType(b) => b.name(),
+            LaneTypeTag::_IntType(i) => i.name(),
             _ => unimplemented!(),
         }
     }
@@ -141,6 +142,7 @@ impl LaneTypeTag {
     fn doc(&self) -> &str {
         match self {
             LaneTypeTag::_BoolType(b) => b.doc(),
+            LaneTypeTag::_IntType(i) => i.doc(),
             _ => unimplemented!(),
         }
     }
@@ -148,6 +150,7 @@ impl LaneTypeTag {
     fn number(&self) -> u8 {
         match self {
             LaneTypeTag::_BoolType(b) => b.number(),
+            LaneTypeTag::_IntType(i) => i.number(),
             _ => unimplemented!(),
         }
     }
@@ -155,12 +158,14 @@ impl LaneTypeTag {
 
 pub struct LaneTypeIterator {
     bool_iter: base_types::BoolIterator,
+    int_iter: base_types::IntIterator,
 }
 
 impl LaneTypeIterator {
     fn new() -> Self {
         Self {
             bool_iter: base_types::BoolIterator::new(),
+            int_iter: base_types::IntIterator::new(),
         }
     }
 }
@@ -174,19 +179,15 @@ impl Iterator for LaneTypeIterator {
                 _tag: LaneTypeTag::_BoolType(b),
             };
             Some(ValueType::Lane(next))
+        } else if let Some(i) = self.int_iter.next() {
+            let next = LaneType {
+                _bits: i as u64,
+                _tag: LaneTypeTag::_IntType(i),
+            };
+            Some(ValueType::Lane(next))
         } else {
             None
         }
-    }
-}
-
-/// A concrete scalar integer type.
-pub struct Integer;
-
-impl Integer {
-    /// Initialize a new integer type with `n` bits.
-    pub fn _new() -> Self {
-        Self {}
     }
 }
 
