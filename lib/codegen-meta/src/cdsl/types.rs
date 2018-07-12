@@ -83,6 +83,7 @@ impl From<VectorType> for ValueType {
 }
 
 /// A concrete scalar type that can appear as a vector lane too.
+#[derive(Debug, Clone, Copy)]
 pub struct LaneType {
     _bits: u64,
     _tag: LaneTypeTag,
@@ -156,6 +157,7 @@ impl LaneType {
 }
 
 /// The kinds of elements in a lane.
+#[derive(Debug, Clone, Copy)]
 pub enum LaneTypeTag {
     _BoolType(base_types::Bool),
     _IntType(base_types::Int),
@@ -243,10 +245,7 @@ impl VectorType {
 
     /// Get the name of this type.
     pub fn name(&self) -> String {
-        format!("{}X{}",
-            self._base.name(),
-            self._lanes,
-        )
+        format!("{}X{}", self._base.name(), self._lanes,)
     }
 
     pub fn doc(&self) -> String {
