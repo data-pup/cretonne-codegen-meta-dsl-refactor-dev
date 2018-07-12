@@ -58,19 +58,24 @@ impl ValueType {
         }
     }
 
-    /// Find the number of bytes that this type occupies in memory.
-    pub fn membytes(&self) -> u64 {
-        match self {
-            _ => unimplemented!(),
-        }
-    }
-
     pub fn _rust_name(&self) -> String {
         match self {
             ValueType::Lane(l) => l._rust_name(),
             ValueType::Special(s) => s._rust_name(),
             _ => unimplemented!(),
         }
+    }
+}
+
+impl From<LaneType> for ValueType {
+    fn from(lane: LaneType) -> Self {
+        ValueType::Lane(lane)
+    }
+}
+
+impl From<VectorType> for ValueType {
+    fn from(vector: VectorType) -> Self {
+        ValueType::_Vector(vector)
     }
 }
 
@@ -110,8 +115,15 @@ impl LaneType {
     /// Get a vector type with this type as the lane type.
     ///
     /// For example, ``i32.by(4)`` returns the :obj:`i32x4` type.
-    pub fn _by(&self, _lanes: u64) -> VectorType {
+    pub fn by(&self, _lanes: u64) -> VectorType {
         unimplemented!();
+    }
+
+    /// Find the number of bytes that this type occupies in memory.
+    pub fn membytes(&self) -> u64 {
+        match self {
+            _ => unimplemented!(),
+        }
     }
 
     /// Return the number of bits in a lane.
@@ -147,7 +159,6 @@ impl LaneType {
         format!("{}{}", _RUST_NAME_PREFIX, type_name.to_uppercase())
     }
 }
-
 
 /// The kinds of elements in a lane.
 pub enum LaneTypeTag {
@@ -191,26 +202,26 @@ impl LaneTypeIterator {
 }
 
 impl Iterator for LaneTypeIterator {
-    type Item = ValueType;
+    type Item = LaneType;
     fn next(&mut self) -> Option<Self::Item> {
         if let Some(b) = self.bool_iter.next() {
             let next = LaneType {
                 _bits: b as u64,
                 _tag: LaneTypeTag::_BoolType(b),
             };
-            Some(ValueType::Lane(next))
+            Some(next)
         } else if let Some(i) = self.int_iter.next() {
             let next = LaneType {
                 _bits: i as u64,
                 _tag: LaneTypeTag::_IntType(i),
             };
-            Some(ValueType::Lane(next))
+            Some(next)
         } else if let Some(f) = self.float_iter.next() {
             let next = LaneType {
                 _bits: f as u64,
                 _tag: LaneTypeTag::_FloatType(f),
             };
-            Some(ValueType::Lane(next))
+            Some(next)
         } else {
             None
         }
