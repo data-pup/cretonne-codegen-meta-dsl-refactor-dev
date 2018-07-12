@@ -29,15 +29,12 @@ fn emit_type(ty: cdsl_types::ValueType, fmt: &mut srcgen::Formatter) -> Result<(
 /// FIXUP: What type should `_bits` be defined as?
 fn emit_vectors(bits: u64, fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
     let size: u64 = bits / 8;
-    for ty in cdsl_types::ValueType::all_lane_types() {
-        let mb = ty.membytes();
-        if mb == 0 || mb >= size {
-            continue;
-        } else {
-            let vec = cdsl_types::VectorType::new(ty, size / mb);
-            emit_type(cdsl_types::ValueType::from(vec), fmt)?;
-        }
-    }
+    cdsl_types::ValueType::all_lane_types()
+        .map(|ty| (ty, ty.membytes()))
+        .filter(|(_, mb)| *mb != 0 && *mb < size)
+        .map(|(ty, mb)| (ty, size / mb))
+        .map(|(ty, lanes)| cdsl_types::VectorType::new(ty, lanes))
+        .try_for_each(|vec| emit_type(cdsl_types::ValueType::from(vec), fmt))?;
 
     Ok(())
 }
