@@ -35,11 +35,11 @@ impl Bool {
     /// Get the name of a boolean variant.
     pub fn name(&self) -> &str {
         match self {
-            Bool::B1 => "B1",
-            Bool::B8 => "B8",
-            Bool::B16 => "B16",
-            Bool::B32 => "B32",
-            Bool::B64 => "B64",
+            Bool::B1 => "b1",
+            Bool::B8 => "b8",
+            Bool::B16 => "b16",
+            Bool::B32 => "b32",
+            Bool::B64 => "b64",
         }
     }
 
@@ -99,10 +99,10 @@ impl Int {
     /// Get the name of a integer variant.
     pub fn name(&self) -> &str {
         match self {
-            Int::I8 => "I8",
-            Int::I16 => "I16",
-            Int::I32 => "I32",
-            Int::I64 => "I64",
+            Int::I8 => "i8",
+            Int::I16 => "i16",
+            Int::I32 => "i32",
+            Int::I64 => "i64",
         }
     }
 
@@ -154,8 +154,8 @@ impl Float {
     /// Get the name of a float variant.
     pub fn name(&self) -> &str {
         match self {
-            Float::F32 => "F32",
-            Float::F64 => "F64",
+            Float::F32 => "f32",
+            Float::F64 => "f64",
         }
     }
 
