@@ -60,6 +60,10 @@ impl ValueType {
             _ => unimplemented!(),
         }
     }
+
+    pub fn _membytes(&self) -> u64 {
+        unimplemented!();
+    }
 }
 
 /// A concrete scalar type that can appear as a vector lane too.
