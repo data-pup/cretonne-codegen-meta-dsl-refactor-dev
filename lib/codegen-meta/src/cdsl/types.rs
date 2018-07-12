@@ -21,22 +21,17 @@ pub enum ValueType {
 }
 
 impl ValueType {
+    /// Iterate through all of the special types (neither lanes nor vectors).
     pub fn all_special_types() -> SpecialTypeIterator {
         SpecialTypeIterator::new()
     }
 
+    /// Iterate through all of the lane types.
     pub fn all_lane_types() -> LaneTypeIterator {
         LaneTypeIterator::new()
     }
 
-    pub fn _rust_name(&self) -> String {
-        match self {
-            ValueType::Lane(l) => l._rust_name(),
-            ValueType::Special(s) => s._rust_name(),
-            _ => unimplemented!(),
-        }
-    }
-
+    /// Get the name of this type.
     pub fn name(&self) -> &str {
         match self {
             ValueType::Lane(l) => l.name(),
@@ -45,6 +40,7 @@ impl ValueType {
         }
     }
 
+    /// Return a string containing the documentation comment for this type.
     pub fn doc(&self) -> String {
         match self {
             ValueType::Lane(l) => l.doc(),
@@ -53,6 +49,7 @@ impl ValueType {
         }
     }
 
+    /// Find the unique number associated with this type.
     pub fn number(&self) -> u8 {
         match self {
             ValueType::Lane(l) => l.number(),
@@ -61,8 +58,19 @@ impl ValueType {
         }
     }
 
-    pub fn _membytes(&self) -> u64 {
-        unimplemented!();
+    /// Find the number of bytes that this type occupies in memory.
+    pub fn membytes(&self) -> u64 {
+        match self {
+            _ => unimplemented!(),
+        }
+    }
+
+    pub fn _rust_name(&self) -> String {
+        match self {
+            ValueType::Lane(l) => l._rust_name(),
+            ValueType::Special(s) => s._rust_name(),
+            _ => unimplemented!(),
+        }
     }
 }
 
@@ -81,17 +89,7 @@ impl LaneType {
         unimplemented!();
     }
 
-    /// Get the name of the type.
-    fn _rust_name(&self) -> String {
-        let type_name: &'static str = match self._tag {
-            LaneTypeTag::_BoolType(_) => "BoolType",
-            LaneTypeTag::_IntType(_) => "IntType",
-            LaneTypeTag::_FloatType(_) => "FloatType",
-        };
-
-        format!("{}{}", _RUST_NAME_PREFIX, type_name.to_uppercase())
-    }
-
+    /// Get the name of this type.
     pub fn name(&self) -> &str {
         self._tag.name()
     }
@@ -107,6 +105,13 @@ impl LaneType {
 
     pub fn number(&self) -> u8 {
         self._tag.number()
+    }
+
+    /// Get a vector type with this type as the lane type.
+    ///
+    /// For example, ``i32.by(4)`` returns the :obj:`i32x4` type.
+    pub fn _by(&self, _lanes: u64) -> VectorType {
+        unimplemented!();
     }
 
     /// Return the number of bits in a lane.
@@ -130,7 +135,19 @@ impl LaneType {
     fn _wider_or_equal(&self, rhs: &LaneType) -> bool {
         (self._lane_count() == rhs._lane_count()) && (self._lane_bits() >= rhs._lane_bits())
     }
+    /// Get the name of the type.
+    /// FIXUP: Describe the distinction between this method and `name`
+    fn _rust_name(&self) -> String {
+        let type_name: &'static str = match self._tag {
+            LaneTypeTag::_BoolType(_) => "BoolType",
+            LaneTypeTag::_IntType(_) => "IntType",
+            LaneTypeTag::_FloatType(_) => "FloatType",
+        };
+
+        format!("{}{}", _RUST_NAME_PREFIX, type_name.to_uppercase())
+    }
 }
+
 
 /// The kinds of elements in a lane.
 pub enum LaneTypeTag {
