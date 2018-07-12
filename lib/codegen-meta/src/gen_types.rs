@@ -34,7 +34,7 @@ fn emit_vectors(bits: u64, fmt: &mut srcgen::Formatter) -> Result<(), error::Err
         if mb == 0 || mb >= size {
             continue;
         } else {
-            let vec = ty.by(size / mb);
+            let vec = cdsl_types::VectorType::new(ty, size / mb);
             emit_type(cdsl_types::ValueType::from(vec), fmt)?;
         }
     }
@@ -53,13 +53,9 @@ fn emit_types(fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
         .try_for_each(|ty| emit_type(ty, fmt))?;
 
     // Emit vector definitions for common SIMD sizes.
-    // emit_vectors(64, fmt)?;
-    // emit_vectors(128, fmt)?;
-    // emit_vectors(256, fmt)?;
-    // emit_vectors(512, fmt)?;
-
-    // FIXUP:
-    // [64, 128, 256, 512].into_iter().try_for_each(|b| emit_vectors(b, fmt))?;
+    [64_u64, 128, 256, 512]
+        .into_iter()
+        .try_for_each(|&b| emit_vectors(b, fmt))?;
 
     Ok(())
 }
