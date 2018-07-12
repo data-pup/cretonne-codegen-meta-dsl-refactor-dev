@@ -27,16 +27,15 @@ fn emit_type(ty: cdsl_types::ValueType, fmt: &mut srcgen::Formatter) -> Result<(
 
 /// Emit definition for all vector types with `bits` total size.
 /// FIXUP: What type should `_bits` be defined as?
-fn _emit_vectors(bits: u64, _fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
+fn emit_vectors(bits: u64, fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
     let size: u64 = bits / 8;
     for ty in cdsl_types::ValueType::all_lane_types() {
         let mb = ty.membytes();
         if mb == 0 || mb >= size {
             continue;
         } else {
-            // Problem here: Vector types do not have a `by` method, but
-            // the `add_lane_types` method returns these.
-            // emit_type(ty.by(size / mb), fmt)?;
+            let vec = ty.by(size / mb);
+            emit_type(cdsl_types::ValueType::from(vec), fmt)?;
         }
     }
 
@@ -46,20 +45,21 @@ fn _emit_vectors(bits: u64, _fmt: &mut srcgen::Formatter) -> Result<(), error::E
 /// Emit types using the given formatter object.
 fn emit_types(fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
     // Emit all of the special types, such as types for CPU flags.
-    for spec in cdsl_types::ValueType::all_special_types() {
-        emit_type(spec, fmt)?;
-    }
+    cdsl_types::ValueType::all_special_types().try_for_each(|spec| emit_type(spec, fmt))?;
 
     // Emit all of the lane types, such integers, floats, and booleans.
-    for ty in cdsl_types::ValueType::all_lane_types() {
-        emit_type(ty, fmt)?;
-    }
+    cdsl_types::ValueType::all_lane_types()
+        .map(cdsl_types::ValueType::from)
+        .try_for_each(|ty| emit_type(ty, fmt))?;
 
     // Emit vector definitions for common SIMD sizes.
     // emit_vectors(64, fmt)?;
     // emit_vectors(128, fmt)?;
     // emit_vectors(256, fmt)?;
     // emit_vectors(512, fmt)?;
+
+    // FIXUP:
+    // [64, 128, 256, 512].into_iter().try_for_each(|b| emit_vectors(b, fmt))?;
 
     Ok(())
 }
