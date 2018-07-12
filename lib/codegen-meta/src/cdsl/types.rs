@@ -32,10 +32,11 @@ impl ValueType {
     }
 
     /// Get the name of this type.
-    pub fn name(&self) -> &str {
+    pub fn name(&self) -> String {
         match self {
-            ValueType::Lane(l) => l.name(),
-            ValueType::Special(s) => s.name(),
+            ValueType::Lane(l) => l.name().to_string(),    // FIXUP
+            ValueType::Special(s) => s.name().to_string(), // FIXUP
+            ValueType::_Vector(v) => v.name(),
             _ => unimplemented!(),
         }
     }
@@ -45,6 +46,7 @@ impl ValueType {
         match self {
             ValueType::Lane(l) => l.doc(),
             ValueType::Special(s) => s.doc(),
+            ValueType::_Vector(v) => v.doc(),
             _ => unimplemented!(),
         }
     }
@@ -54,6 +56,7 @@ impl ValueType {
         match self {
             ValueType::Lane(l) => l.number(),
             ValueType::Special(s) => s.number(),
+            ValueType::_Vector(_) => 0,
             _ => unimplemented!(),
         }
     }
@@ -112,18 +115,9 @@ impl LaneType {
         self._tag.number()
     }
 
-    /// Get a vector type with this type as the lane type.
-    ///
-    /// For example, ``i32.by(4)`` returns the :obj:`i32x4` type.
-    pub fn by(&self, _lanes: u64) -> VectorType {
-        unimplemented!();
-    }
-
     /// Find the number of bytes that this type occupies in memory.
     pub fn membytes(&self) -> u64 {
-        match self {
-            _ => unimplemented!(),
-        }
+        self._lane_bits()
     }
 
     /// Return the number of bits in a lane.
@@ -147,6 +141,7 @@ impl LaneType {
     fn _wider_or_equal(&self, rhs: &LaneType) -> bool {
         (self._lane_count() == rhs._lane_count()) && (self._lane_bits() >= rhs._lane_bits())
     }
+
     /// Get the name of the type.
     /// FIXUP: Describe the distinction between this method and `name`
     fn _rust_name(&self) -> String {
@@ -234,20 +229,36 @@ impl Iterator for LaneTypeIterator {
 /// and a positive number of lanes.
 pub struct VectorType {
     _base: LaneType,
-    _lanes: u8,
+    _lanes: u64,
 }
 
 impl VectorType {
     /// Initialize a new integer type with `n` bits.
-    pub fn _new(base: LaneType, lanes: u8) -> VectorType {
+    pub fn new(base: LaneType, lanes: u64) -> VectorType {
         VectorType {
             _base: base,
             _lanes: lanes,
         }
     }
 
+    /// Get the name of this type.
+    pub fn name(&self) -> String {
+        format!("{}X{}",
+        self._base.name()
+        self._lanes,
+        )
+    }
+
+    pub fn doc(&self) -> String {
+        format!(
+            "A SIMD vector with {} lanes containing a '{}' each.",
+            self._lanes,
+            self._base.name()
+        )
+    }
+
     /// Return the number of lanes.
-    pub fn _lane_count(&self) -> u8 {
+    pub fn _lane_count(&self) -> u64 {
         self._lanes
     }
 
