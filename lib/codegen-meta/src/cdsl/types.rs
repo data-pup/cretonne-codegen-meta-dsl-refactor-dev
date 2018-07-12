@@ -244,8 +244,8 @@ impl VectorType {
     /// Get the name of this type.
     pub fn name(&self) -> String {
         format!("{}X{}",
-        self._base.name()
-        self._lanes,
+            self._base.name(),
+            self._lanes,
         )
     }
 
