@@ -106,6 +106,9 @@ impl LaneType {
     pub fn doc(&self) -> String {
         match self._tag {
             LaneTypeTag::_BoolType(_) => format!("A boolean type with {} bits.", self._bits),
+            LaneTypeTag::_IntType(_) if self._bits < 32 => format!(
+                "An integer type with {} bits.
+                WARNING: arithmetic on {}bit integers is incomplete.", self._bits, self._bits),
             LaneTypeTag::_IntType(_) => format!("An integer type with {} bits.", self._bits),
             LaneTypeTag::_FloatType(base_types::Float::F32) => String::from(
                 "A 32-bit floating point type represented in the IEEE 754-2008
