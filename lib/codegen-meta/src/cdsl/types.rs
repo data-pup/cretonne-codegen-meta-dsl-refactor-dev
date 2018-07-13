@@ -107,8 +107,14 @@ impl LaneType {
         match self._tag {
             LaneTypeTag::_BoolType(_) => format!("A boolean type with {} bits.", self._bits),
             LaneTypeTag::_IntType(_) => format!("An integer type with {} bits.", self._bits),
-            LaneTypeTag::_FloatType(base_types::Float::F32) => String::from("A 32-bit floating point type represented in the IEEE 754-2008 *binary32* interchange format. This corresponds to the :c:type:`float` type in most C implementations."),
-            LaneTypeTag::_FloatType(base_types::Float::F64) => String::from("A 64-bit floating point type represented in the IEEE 754-2008 *binary64* interchange format. This corresponds to the :c:type:`double` type in most C implementations.")
+            LaneTypeTag::_FloatType(base_types::Float::F32) => String::from(
+                "A 32-bit floating point type represented in the IEEE 754-2008
+                *binary32* interchange format. This corresponds to the :c:type:`float`
+                type in most C implementations."),
+            LaneTypeTag::_FloatType(base_types::Float::F64) => String::from(
+                "A 64-bit floating point type represented in the IEEE 754-2008
+                *binary64* interchange format. This corresponds to the :c:type:`double`
+                type in most C implementations.")
         }
     }
 
@@ -303,10 +309,12 @@ impl SpecialType {
 
     pub fn doc(&self) -> String {
         match self.tag {
-            SpecialTypeTag::Flag(base_types::Flag::IFlags) => String::from("CPU flags representing the result of an integer comparison. These flags can be tested with an :type:`intcc` condition code.
-            "),
-            SpecialTypeTag::Flag(base_types::Flag::FFlags) => String::from("CPU flags representing the result of a floating point comparison. These flags can be tested with a :type:`floatcc` condition code.
-            "),
+            SpecialTypeTag::Flag(base_types::Flag::IFlags) => String::from(
+                "CPU flags representing the result of an integer comparison. These flags
+                can be tested with an :type:`intcc` condition code."),
+            SpecialTypeTag::Flag(base_types::Flag::FFlags) => String::from(
+                "CPU flags representing the result of a floating point comparison. These flags
+                can be tested with a :type:`floatcc` condition code."),
         }
     }
 
