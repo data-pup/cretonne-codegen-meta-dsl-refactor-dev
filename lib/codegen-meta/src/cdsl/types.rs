@@ -285,9 +285,6 @@ impl _BVType {
     }
 }
 
-// /// A flat bitvector type. Used for semantics description only.
-// struct _BVType {}
-
 /// A concrete scalar type that is neither a vector nor a lane type.
 ///
 /// Special types cannot be used to form vectors.
