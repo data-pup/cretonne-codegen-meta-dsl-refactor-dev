@@ -283,11 +283,6 @@ impl _BVType {
     }
 }
 
-// /// A type representing CPU flags.
-// ///
-// /// Flags can't be stored in memory.
-// struct _FlagsType {}
-
 // /// A flat bitvector type. Used for semantics description only.
 // struct _BVType {}
 
@@ -366,9 +361,3 @@ impl Iterator for SpecialTypeIterator {
         }
     }
 }
-
-// /// A concrete SIMD vector type.
-// ///
-// /// A vector type has a lane type which is an instance of :class:`LaneType`,
-// /// and a positive number of lanes.
-// struct _VectorType {}
