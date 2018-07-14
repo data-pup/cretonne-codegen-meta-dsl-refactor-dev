@@ -56,7 +56,7 @@ impl ValueType {
         match self {
             ValueType::Lane(l) => l.number(),
             ValueType::Special(s) => s.number(),
-            ValueType::Vector(_) => 0,
+            ValueType::Vector(v) => v.number(),
             _ => unimplemented!(),
         }
     }
@@ -280,6 +280,14 @@ impl VectorType {
             self.lanes,
             self.base.name()
         )
+    }
+
+    /// Find the unique number associated with this type.
+    pub fn number(&self) -> u8 {
+        let b = self.base.number() as f64;
+        let l = (self.lanes as f64).log2();
+        let num = 16_f64 * l + b;
+        num as u8
     }
 
     /// Return the number of lanes.
