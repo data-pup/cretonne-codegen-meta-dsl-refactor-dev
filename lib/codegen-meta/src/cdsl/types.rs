@@ -14,10 +14,10 @@ static _RUST_NAME_PREFIX: &'static str = "ir::types::";
 /// All SSA values have a type that is described by an instance of `ValueType`
 /// or one of its subclasses.
 pub enum ValueType {
-    _BV(_BVType),
+    BV(BVType),
     Lane(LaneType),
     Special(SpecialType),
-    _Vector(VectorType),
+    Vector(VectorType),
 }
 
 impl ValueType {
@@ -36,7 +36,7 @@ impl ValueType {
         match self {
             ValueType::Lane(l) => l.name().to_string(),    // FIXUP
             ValueType::Special(s) => s.name().to_string(), // FIXUP
-            ValueType::_Vector(v) => v.name(),
+            ValueType::Vector(v) => v.name(),
             _ => unimplemented!(),
         }
     }
@@ -46,7 +46,7 @@ impl ValueType {
         match self {
             ValueType::Lane(l) => l.doc(),
             ValueType::Special(s) => s.doc(),
-            ValueType::_Vector(v) => v.doc(),
+            ValueType::Vector(v) => v.doc(),
             _ => unimplemented!(),
         }
     }
@@ -56,7 +56,7 @@ impl ValueType {
         match self {
             ValueType::Lane(l) => l.number(),
             ValueType::Special(s) => s.number(),
-            ValueType::_Vector(_) => 0,
+            ValueType::Vector(_) => 0,
             _ => unimplemented!(),
         }
     }
@@ -70,9 +70,9 @@ impl ValueType {
     }
 }
 
-impl From<_BVType> for ValueType {
-    fn from(bv: _BVType) -> Self {
-        ValueType::_BV(bv)
+impl From<BVType> for ValueType {
+    fn from(bv: BVType) -> Self {
+        ValueType::BV(bv)
     }
 }
 
@@ -90,7 +90,7 @@ impl From<SpecialType> for ValueType {
 
 impl From<VectorType> for ValueType {
     fn from(vector: VectorType) -> Self {
-        ValueType::_Vector(vector)
+        ValueType::Vector(vector)
     }
 }
 
@@ -143,7 +143,7 @@ impl LaneType {
 
     /// Find the number of bytes that this type occupies in memory.
     pub fn membytes(&self) -> u64 {
-        self._lane_bits()
+        self._lane_bits() / 8
     }
 
     /// Return the number of bits in a lane.
@@ -293,10 +293,10 @@ impl VectorType {
 }
 
 /// A flat bitvector type. Used for semantics description only.
-pub struct _BVType;
+pub struct BVType;
 
-impl _BVType {
-    /// Initialize a new integer type with `n` bits.
+impl BVType {
+    /// Initialize a new bitvector type with `n` bits.
     pub fn _new() -> Self {
         Self {}
     }

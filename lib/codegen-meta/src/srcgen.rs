@@ -289,7 +289,7 @@ fn parse_multiline(s: &str) -> Vec<String> {
 ///
 ///    >>> m = Match('x')
 ///    >>> m.arm('Orange', ['a', 'b'], 'some body')
-///    >>> m.arm('Yellow', ['a', 'b'], 'some body')
+///    >>> m.arm('Yellow', ['a', 'b'], 'once told me')
 ///    >>> m.arm('Green', ['a', 'b'], 'different body')
 ///    >>> m.arm('Blue', ['x', 'y'], 'some body')
 ///    >>> assert(len(m.arms) == 3)

@@ -218,15 +218,6 @@ impl Flag {
             Flag::FFlags => 2,
         }
     }
-
-    /// Get the flag variant that corresponds to a given number.
-    pub fn _by_number(i: u8) -> Option<Flag> {
-        match i {
-            0 => Some(Flag::IFlags),
-            1 => Some(Flag::FFlags),
-            _ => None,
-        }
-    }
 }
 
 /// Iterator through the variants of the Flag enum.
@@ -279,18 +270,18 @@ mod iter_tests {
     }
 
     #[test]
-    fn flag_iter_works() {
-        let mut flag_iter = FlagIterator::new();
-        assert_eq!(flag_iter.next(), Some(Flag::IFlags));
-        assert_eq!(flag_iter.next(), Some(Flag::FFlags));
-        assert_eq!(flag_iter.next(), None);
-    }
-
-    #[test]
     fn float_iter_works() {
         let mut float_iter = FloatIterator::new();
         assert_eq!(float_iter.next(), Some(Float::F32));
         assert_eq!(float_iter.next(), Some(Float::F64));
         assert_eq!(float_iter.next(), None);
+    }
+
+    #[test]
+    fn flag_iter_works() {
+        let mut flag_iter = FlagIterator::new();
+        assert_eq!(flag_iter.next(), Some(Flag::IFlags));
+        assert_eq!(flag_iter.next(), Some(Flag::FFlags));
+        assert_eq!(flag_iter.next(), None);
     }
 }
