@@ -157,7 +157,7 @@ pub enum Float {
 }
 
 impl Float {
-    /// Get the number of a flag variant.
+    /// Get the number of a float variant.
     pub fn number(&self) -> u8 {
         let offset = 9 + match self {
             Float::F32 => 0,
@@ -214,20 +214,25 @@ pub enum Flag {
 }
 
 impl Flag {
-    /// Get the name of a flag variant.
-    pub fn name(&self) -> &str {
-        match self {
-            Flag::IFlags => "iflags",
-            Flag::FFlags => "fflags",
-        }
-    }
-
     /// Get the number of a flag variant.
     pub fn number(&self) -> u8 {
         match self {
             Flag::IFlags => 1,
             Flag::FFlags => 2,
         }
+    }
+}
+
+impl fmt::Display for Flag {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Flag::IFlags => "iflags",
+                Flag::FFlags => "fflags",
+            }
+        )
     }
 }
 

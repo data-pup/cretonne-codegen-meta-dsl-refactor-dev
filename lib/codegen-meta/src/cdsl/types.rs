@@ -315,7 +315,7 @@ impl SpecialType {
         format!("{}{}", _RUST_NAME_PREFIX, self.name().to_uppercase())
     }
 
-    pub fn name(&self) -> &str {
+    pub fn name(&self) -> String {
         self.tag.name()
     }
 
@@ -342,9 +342,9 @@ pub enum SpecialTypeTag {
 }
 
 impl SpecialTypeTag {
-    pub fn name(&self) -> &str {
+    pub fn name(&self) -> String {
         match self {
-            SpecialTypeTag::Flag(f) => f.name(),
+            SpecialTypeTag::Flag(f) => format!("{}", f),
         }
     }
 
