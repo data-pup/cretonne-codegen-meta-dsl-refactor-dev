@@ -255,40 +255,40 @@ impl Iterator for LaneTypeIterator {
 /// A vector type has a lane type which is an instance of `LaneType`,
 /// and a positive number of lanes.
 pub struct VectorType {
-    _base: LaneType,
-    _lanes: u64,
+    base: LaneType,
+    lanes: u64,
 }
 
 impl VectorType {
     /// Initialize a new integer type with `n` bits.
     pub fn new(base: LaneType, lanes: u64) -> VectorType {
         VectorType {
-            _base: base,
-            _lanes: lanes,
+            base: base,
+            lanes: lanes,
         }
     }
 
     /// Get the name of this type.
     pub fn name(&self) -> String {
-        format!("{}X{}", self._base.name(), self._lanes,)
+        format!("{}X{}", self.base.name(), self.lanes,)
     }
 
     pub fn doc(&self) -> String {
         format!(
             "A SIMD vector with {} lanes containing a '{}' each.",
-            self._lanes,
-            self._base.name()
+            self.lanes,
+            self.base.name()
         )
     }
 
     /// Return the number of lanes.
     pub fn _lane_count(&self) -> u64 {
-        self._lanes
+        self.lanes
     }
 
     /// Return the number of bits in a lane.
     pub fn _lane_bits(&self) -> u64 {
-        self._base._lane_bits()
+        self.base._lane_bits()
     }
 }
 
