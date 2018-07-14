@@ -117,19 +117,19 @@ impl LaneType {
 
     pub fn doc(&self) -> String {
         match self._tag {
-            LaneTypeTag::_BoolType(_) => format!("A boolean type with {} bits.", self._bits),
-            LaneTypeTag::_IntType(_) if self._bits < 32 => format!(
+            LaneTypeTag::BoolType(_) => format!("A boolean type with {} bits.", self._bits),
+            LaneTypeTag::IntType(_) if self._bits < 32 => format!(
                 "An integer type with {} bits.
                 WARNING: arithmetic on {}bit integers is incomplete.",
                 self._bits, self._bits
             ),
-            LaneTypeTag::_IntType(_) => format!("An integer type with {} bits.", self._bits),
-            LaneTypeTag::_FloatType(base_types::Float::F32) => String::from(
+            LaneTypeTag::IntType(_) => format!("An integer type with {} bits.", self._bits),
+            LaneTypeTag::FloatType(base_types::Float::F32) => String::from(
                 "A 32-bit floating point type represented in the IEEE 754-2008
                 *binary32* interchange format. This corresponds to the :c:type:`float`
                 type in most C implementations.",
             ),
-            LaneTypeTag::_FloatType(base_types::Float::F64) => String::from(
+            LaneTypeTag::FloatType(base_types::Float::F64) => String::from(
                 "A 64-bit floating point type represented in the IEEE 754-2008
                 *binary64* interchange format. This corresponds to the :c:type:`double`
                 type in most C implementations.",
@@ -172,9 +172,9 @@ impl LaneType {
     /// FIXUP: Describe the distinction between this method and `name`
     fn _rust_name(&self) -> String {
         let type_name: &'static str = match self._tag {
-            LaneTypeTag::_BoolType(_) => "BoolType",
-            LaneTypeTag::_IntType(_) => "IntType",
-            LaneTypeTag::_FloatType(_) => "FloatType",
+            LaneTypeTag::BoolType(_) => "BoolType",
+            LaneTypeTag::IntType(_) => "IntType",
+            LaneTypeTag::FloatType(_) => "FloatType",
         };
 
         format!("{}{}", _RUST_NAME_PREFIX, type_name.to_uppercase())
@@ -184,25 +184,25 @@ impl LaneType {
 /// The kinds of elements in a lane.
 #[derive(Debug, Clone, Copy)]
 pub enum LaneTypeTag {
-    _BoolType(base_types::Bool),
-    _IntType(base_types::Int),
-    _FloatType(base_types::Float),
+    BoolType(base_types::Bool),
+    IntType(base_types::Int),
+    FloatType(base_types::Float),
 }
 
 impl LaneTypeTag {
     fn name(&self) -> String {
         match self {
-            LaneTypeTag::_BoolType(b) => b.name(),
-            LaneTypeTag::_IntType(i) => i.name(),
-            LaneTypeTag::_FloatType(f) => f.name(),
+            LaneTypeTag::BoolType(b) => b.name(),
+            LaneTypeTag::IntType(i) => i.name(),
+            LaneTypeTag::FloatType(f) => f.name(),
         }
     }
 
     fn number(&self) -> u8 {
         match self {
-            LaneTypeTag::_BoolType(b) => b.number(),
-            LaneTypeTag::_IntType(i) => i.number(),
-            LaneTypeTag::_FloatType(f) => f.number(),
+            LaneTypeTag::BoolType(b) => b.number(),
+            LaneTypeTag::IntType(i) => i.number(),
+            LaneTypeTag::FloatType(f) => f.number(),
         }
     }
 }
@@ -229,19 +229,19 @@ impl Iterator for LaneTypeIterator {
         if let Some(b) = self.bool_iter.next() {
             let next = LaneType {
                 _bits: b as u64,
-                _tag: LaneTypeTag::_BoolType(b),
+                _tag: LaneTypeTag::BoolType(b),
             };
             Some(next)
         } else if let Some(i) = self.int_iter.next() {
             let next = LaneType {
                 _bits: i as u64,
-                _tag: LaneTypeTag::_IntType(i),
+                _tag: LaneTypeTag::IntType(i),
             };
             Some(next)
         } else if let Some(f) = self.float_iter.next() {
             let next = LaneType {
                 _bits: f as u64,
-                _tag: LaneTypeTag::_FloatType(f),
+                _tag: LaneTypeTag::FloatType(f),
             };
             Some(next)
         } else {
