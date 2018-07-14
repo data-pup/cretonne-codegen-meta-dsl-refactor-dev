@@ -1,10 +1,6 @@
 //! This module predefines all the Cretonne scalar types.
 
-// DEVELOPMENT NOTE: This might require further revision, this defines the
-// sizes of int and bool scalar types, rather than the types themselves.
-
-// FIXUP: Some of the name/doc logic may be able to be cleaned up using to_string
-// or other various traits.
+use std::fmt;
 
 // Numbering scheme for value types:
 //
@@ -32,18 +28,6 @@ pub enum Bool {
 }
 
 impl Bool {
-    /// Get the name of a boolean variant.
-    pub fn name(&self) -> String {
-        // match self {
-        //     Bool::B1 => "b1",
-        //     Bool::B8 => "b8",
-        //     Bool::B16 => "b16",
-        //     Bool::B32 => "b32",
-        //     Bool::B64 => "b64",
-        // }
-        format!("{:?}", self).to_lowercase()
-    }
-
     /// Get the number of a boolean variant.
     pub fn number(&self) -> u8 {
         let offset = match self {
@@ -55,6 +39,18 @@ impl Bool {
         };
 
         _LANE_BASE + offset
+    }
+}
+
+impl fmt::Display for Bool {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", match self {
+            Bool::B1 => "b1",
+            Bool::B8 => "b8",
+            Bool::B16 => "b16",
+            Bool::B32 => "b32",
+            Bool::B64 => "b64",
+        })
     }
 }
 
@@ -97,17 +93,6 @@ pub enum Int {
 }
 
 impl Int {
-    /// Get the name of a integer variant.
-    pub fn name(&self) -> String {
-        // match self {
-        //     Int::I8 => "i8",
-        //     Int::I16 => "i16",
-        //     Int::I32 => "i32",
-        //     Int::I64 => "i64",
-        // }
-        format!("{:?}", self).to_lowercase()
-    }
-
     /// Get the number of a integer variant.
     pub fn number(&self) -> u8 {
         let offset = 5 + match self {
@@ -118,6 +103,17 @@ impl Int {
         };
 
         _LANE_BASE + offset
+    }
+}
+
+impl fmt::Display for Int {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", match self {
+            Int::I8 => "i8",
+            Int::I16 => "i16",
+            Int::I32 => "i32",
+            Int::I64 => "i64",
+        })
     }
 }
 
@@ -153,15 +149,6 @@ pub enum Float {
 }
 
 impl Float {
-    /// Get the name of a float variant.
-    pub fn name(&self) -> String {
-        // match self {
-        //     Float::F32 => "f32",
-        //     Float::F64 => "f64",
-        // }
-        format!("{:?}", self).to_lowercase()
-    }
-
     /// Get the number of a flag variant.
     pub fn number(&self) -> u8 {
         let offset = 9 + match self {
@@ -170,6 +157,15 @@ impl Float {
         };
 
         _LANE_BASE + offset
+    }
+}
+
+impl fmt::Display for Float {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", match self {
+            Float::F32 => "f32",
+            Float::F64 => "f64",
+        })
     }
 }
 
