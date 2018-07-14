@@ -34,7 +34,7 @@ impl ValueType {
     /// Get the name of this type.
     pub fn name(&self) -> String {
         match self {
-            ValueType::Lane(l) => l.name().to_string(),    // FIXUP
+            ValueType::Lane(l) => l.name(),
             ValueType::Special(s) => s.name().to_string(), // FIXUP
             ValueType::Vector(v) => v.name(),
             _ => unimplemented!(),
@@ -111,7 +111,7 @@ impl LaneType {
     }
 
     /// Get the name of this type.
-    pub fn name(&self) -> &str {
+    pub fn name(&self) -> String {
         self._tag.name()
     }
 
@@ -190,7 +190,7 @@ pub enum LaneTypeTag {
 }
 
 impl LaneTypeTag {
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         match self {
             LaneTypeTag::_BoolType(b) => b.name(),
             LaneTypeTag::_IntType(i) => i.name(),
