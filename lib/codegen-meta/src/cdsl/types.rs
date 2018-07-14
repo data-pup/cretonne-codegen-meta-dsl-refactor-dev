@@ -190,11 +190,12 @@ pub enum LaneTypeTag {
 }
 
 impl LaneTypeTag {
+    /// Get the name of a lane type.
     fn name(&self) -> String {
         match self {
-            LaneTypeTag::BoolType(b) => b.name(),
-            LaneTypeTag::IntType(i) => i.name(),
-            LaneTypeTag::FloatType(f) => f.name(),
+            LaneTypeTag::BoolType(b) => format!("{}", b),
+            LaneTypeTag::IntType(i) => format!("{}", i),
+            LaneTypeTag::FloatType(f) => format!("{}", f),
         }
     }
 
