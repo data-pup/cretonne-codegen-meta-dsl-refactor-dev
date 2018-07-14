@@ -70,9 +70,21 @@ impl ValueType {
     }
 }
 
+impl From<_BVType> for ValueType {
+    fn from(bv: _BVType) -> Self {
+        ValueType::_BV(bv)
+    }
+}
+
 impl From<LaneType> for ValueType {
     fn from(lane: LaneType) -> Self {
         ValueType::Lane(lane)
+    }
+}
+
+impl From<SpecialType> for ValueType {
+    fn from(spec: SpecialType) -> Self {
+        ValueType::Special(spec)
     }
 }
 
@@ -108,7 +120,9 @@ impl LaneType {
             LaneTypeTag::_BoolType(_) => format!("A boolean type with {} bits.", self._bits),
             LaneTypeTag::_IntType(_) if self._bits < 32 => format!(
                 "An integer type with {} bits.
-                WARNING: arithmetic on {}bit integers is incomplete.", self._bits, self._bits),
+                WARNING: arithmetic on {}bit integers is incomplete.",
+                self._bits, self._bits
+            ),
             LaneTypeTag::_IntType(_) => format!("An integer type with {} bits.", self._bits),
             LaneTypeTag::_FloatType(base_types::Float::F32) => String::from(
                 "A 32-bit floating point type represented in the IEEE 754-2008
