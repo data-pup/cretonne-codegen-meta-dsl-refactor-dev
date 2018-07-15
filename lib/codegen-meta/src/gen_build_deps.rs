@@ -12,12 +12,30 @@
 
 use error;
 
+use std::fs;
 use std::path;
 
 /// Recursively find all interesting source files and directories in the
 /// directory tree starting at top. Yield a path to each file.
-fn source_files(_meta_dir: &path::PathBuf) -> Result<Vec<String>, error::Error> {
-    unimplemented!();
+fn source_files(dir: &path::PathBuf) -> Result<Vec<String>, error::Error> {
+    let mut files = Vec::new();
+    if dir.is_dir() {
+        for entry in fs::read_dir(&dir)? {
+            let entry = entry?;
+            let path = entry.path();
+            if path.is_dir() {
+                let mut child_dir_files = source_files(&path)?;
+                files.append(&mut child_dir_files);
+            } else {
+                if let Some(ext) = path.extension() {
+                    if ext == "rs" {
+                        files.push(path.to_str().unwrap().to_string());
+                    }
+                }
+            }
+        }
+    }
+    Ok(files)
 }
 
 pub fn generate(meta_dir: &path::PathBuf) -> Result<(), error::Error> {

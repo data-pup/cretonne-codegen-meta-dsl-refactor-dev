@@ -21,7 +21,6 @@
 extern crate cretonne_codegen_meta as meta;
 
 use std::env;
-use std::fs;
 use std::process;
 
 fn main() {
