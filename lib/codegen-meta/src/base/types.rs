@@ -97,7 +97,7 @@ pub enum Int {
 }
 
 impl Int {
-    /// Get the number of a integer variant.
+    /// Get the number of an integer variant.
     pub fn number(&self) -> u8 {
         let offset = 5 + match self {
             Int::I8 => 0,
