@@ -81,7 +81,10 @@ fn main() {
     if let Err(err) = meta::gen_types::generate("new_types.rs", &out_dir) {
         eprintln!("Error: {}", err);
         process::exit(1);
-    };
+    } else if let Err(err) = meta::gen_build_deps::generate() {
+        eprintln!("Error: {}", err);
+        process::exit(1);
+    }
 }
 
 fn identify_python() -> &'static str {
