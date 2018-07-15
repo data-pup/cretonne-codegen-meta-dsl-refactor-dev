@@ -16,21 +16,13 @@ use std::path;
 
 /// Recursively find all interesting source files and directories in the
 /// directory tree starting at top. Yield a path to each file.
-fn source_files() -> Result<Vec<String>, error::Error> {
+fn source_files(_meta_dir: &path::PathBuf) -> Result<Vec<String>, error::Error> {
     unimplemented!();
 }
 
 pub fn generate(meta_dir: &path::PathBuf) -> Result<(), error::Error> {
     println!("Dependencies from Rust meta language directory:");
-
-    // FIXUP: Get codegen-meta crate directory.
-    // The original python code uses this line of code:
-    // meta = dirname(abspath(__file__))
-    // NOTE: Read into what `__file__` is doing here.
-    // dirname, of the absolute path to this file?
-    // let meta = TODO ...
-
-    source_files()?
+    source_files(&meta_dir)?
         .into_iter()
         .for_each(|p| println!("cargo:rerun-if-changed={}", p));
 
