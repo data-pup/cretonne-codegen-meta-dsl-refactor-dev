@@ -128,11 +128,6 @@ impl Formatter {
         let path = path::Path::new(&path_str);
         let mut f = fs::File::create(path)?;
 
-        // FIXUP
-        for l in self.lines.iter() {
-            println!("{}", l);
-        }
-
         for l in self.lines.iter().map(|l| l.as_bytes()) {
             f.write_all(l)?;
         }
