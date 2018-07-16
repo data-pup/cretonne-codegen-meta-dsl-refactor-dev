@@ -32,7 +32,7 @@ impl From<io::Error> for Error {
 }
 
 #[derive(Debug)]
-pub enum ErrorInner {
+enum ErrorInner {
     Msg(String),
     IoError(io::Error),
 }
