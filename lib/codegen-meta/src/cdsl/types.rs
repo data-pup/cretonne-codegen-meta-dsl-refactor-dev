@@ -34,30 +34,30 @@ impl ValueType {
     /// Get the name of this type.
     pub fn name(&self) -> String {
         match self {
+            ValueType::BV(_) => unimplemented!(),
             ValueType::Lane(l) => l.name(),
             ValueType::Special(s) => s.name(),
             ValueType::Vector(v) => v.name(),
-            _ => unimplemented!(),
         }
     }
 
     /// Return a string containing the documentation comment for this type.
     pub fn doc(&self) -> String {
         match self {
+            ValueType::BV(_) => unimplemented!(),
             ValueType::Lane(l) => l.doc(),
             ValueType::Special(s) => s.doc(),
             ValueType::Vector(v) => v.doc(),
-            _ => unimplemented!(),
         }
     }
 
     /// Find the unique number associated with this type.
     pub fn number(&self) -> u8 {
         match self {
+            ValueType::BV(_) => unimplemented!(),
             ValueType::Lane(l) => l.number(),
             ValueType::Special(s) => s.number(),
             ValueType::Vector(v) => v.number(),
-            _ => unimplemented!(),
         }
     }
 
