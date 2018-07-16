@@ -44,20 +44,18 @@ impl ValueType {
     /// Return the number of bits in a lane.
     pub fn lane_bits(&self) -> u64 {
         match self {
-            ValueType::BV(_) => unimplemented!(),
-            ValueType::Lane(l) => l._lane_bits(),
+            ValueType::BV(b) => b.lane_bits(),
+            ValueType::Lane(l) => l.lane_bits(),
             ValueType::Special(_) => unimplemented!(),
-            ValueType::Vector(v) => v._lane_bits(),
+            ValueType::Vector(v) => v.lane_bits(),
         }
     }
 
     /// Return the number of lanes.
     pub fn lane_count(&self) -> u64 {
         match self {
-            ValueType::BV(_) => unimplemented!(),
-            ValueType::Lane(l) => l._lane_count(),
-            ValueType::Special(_) => unimplemented!(),
-            ValueType::Vector(v) => v._lane_count(),
+            ValueType::Vector(v) => v.lane_count(),
+            _ => 1,
         }
     }
 
@@ -164,13 +162,8 @@ impl LaneType {
     }
 
     /// Return the number of bits in a lane.
-    pub fn _lane_bits(&self) -> u64 {
+    pub fn lane_bits(&self) -> u64 {
         self.bits
-    }
-
-    /// Return the number of bits in a lane.
-    fn _lane_count(&self) -> u64 {
-        1
     }
 
     /// Get the name of this lane type.
@@ -297,19 +290,19 @@ impl VectorType {
     }
 
     /// Return the number of bits in a lane.
-    pub fn _lane_bits(&self) -> u64 {
-        self.base._lane_bits()
+    pub fn lane_bits(&self) -> u64 {
+        self.base.lane_bits()
     }
 
     /// Return the number of lanes.
-    pub fn _lane_count(&self) -> u64 {
+    pub fn lane_count(&self) -> u64 {
         self.lanes
     }
 }
 
 /// A flat bitvector type. Used for semantics description only.
 pub struct BVType {
-    bits: u64
+    bits: u64,
 }
 
 impl BVType {
@@ -321,6 +314,11 @@ impl BVType {
     /// Return a string containing the documentation comment for this bitvector type.
     pub fn doc(&self) -> String {
         format!("A bitvector type with {} bits.", self.bits)
+    }
+
+    /// Return the number of bits in a lane.
+    pub fn lane_bits(&self) -> u64 {
+        self.bits
     }
 
     /// Get the name of this bitvector type.
