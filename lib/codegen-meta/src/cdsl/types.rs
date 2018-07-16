@@ -158,6 +158,30 @@ impl LaneType {
     }
 }
 
+impl From<base_types::Bool> for LaneType {
+    fn from(b: base_types::Bool) -> Self {
+        let bits = b as u64;
+        let tag = LaneTypeTag::BoolType(b);
+        Self { bits, tag }
+    }
+}
+
+impl From<base_types::Int> for LaneType {
+    fn from(i: base_types::Int) -> Self {
+        let bits = i as u64;
+        let tag = LaneTypeTag::IntType(i);
+        Self { bits, tag }
+    }
+}
+
+impl From<base_types::Float> for LaneType {
+    fn from(f: base_types::Float) -> Self {
+        let bits = f as u64;
+        let tag = LaneTypeTag::FloatType(f);
+        Self { bits, tag }
+    }
+}
+
 /// The kinds of elements in a lane.
 #[derive(Debug, Clone, Copy)]
 pub enum LaneTypeTag {
@@ -204,24 +228,12 @@ impl LaneTypeIterator {
 impl Iterator for LaneTypeIterator {
     type Item = LaneType;
     fn next(&mut self) -> Option<Self::Item> {
-        if let Some(b) = self.bool_iter.next() {
-            let next = LaneType {
-                bits: b as u64,
-                tag: LaneTypeTag::BoolType(b),
-            };
-            Some(next)
-        } else if let Some(i) = self.int_iter.next() {
-            let next = LaneType {
-                bits: i as u64,
-                tag: LaneTypeTag::IntType(i),
-            };
-            Some(next)
-        } else if let Some(f) = self.float_iter.next() {
-            let next = LaneType {
-                bits: f as u64,
-                tag: LaneTypeTag::FloatType(f),
-            };
-            Some(next)
+        if let b @ Some(_) = self.bool_iter.next() {
+            b.map(LaneType::from)
+        } else if let i @ Some(_) = self.int_iter.next() {
+            i.map(LaneType::from)
+        } else if let f @ Some(_) = self.float_iter.next() {
+            f.map(LaneType::from)
         } else {
             None
         }
