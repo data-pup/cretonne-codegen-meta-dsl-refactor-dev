@@ -35,7 +35,7 @@ impl ValueType {
     pub fn name(&self) -> String {
         match self {
             ValueType::Lane(l) => l.name(),
-            ValueType::Special(s) => s.name().to_string(), // FIXUP
+            ValueType::Special(s) => s.name(),
             ValueType::Vector(v) => v.name(),
             _ => unimplemented!(),
         }
