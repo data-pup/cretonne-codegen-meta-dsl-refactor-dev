@@ -16,7 +16,7 @@ use std::fs;
 use std::path;
 
 /// Recursively find all interesting source files and directories in the
-/// directory tree starting at top. Yield a path to each file.
+/// directory tree starting at `dir`. Yield a path to each file.
 fn source_files(dir: &path::PathBuf) -> Result<Vec<String>, error::Error> {
     let mut files = Vec::new();
     if dir.is_dir() {
@@ -36,6 +36,8 @@ fn source_files(dir: &path::PathBuf) -> Result<Vec<String>, error::Error> {
     Ok(files)
 }
 
+/// Generate the lines of `cargo:rerun-if-changed` output, for each Rust source
+/// file inside of the cranelift-codegen-meta crate.
 pub fn generate(meta_dir: &path::PathBuf) -> Result<(), error::Error> {
     println!("Dependencies from Rust meta language directory:");
     source_files(&meta_dir)?
