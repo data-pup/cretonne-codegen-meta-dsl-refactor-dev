@@ -34,7 +34,7 @@ impl ValueType {
     /// Return a string containing the documentation comment for this type.
     pub fn doc(&self) -> String {
         match self {
-            ValueType::BV(_) => unimplemented!(),
+            ValueType::BV(b) => b.doc(),
             ValueType::Lane(l) => l.doc(),
             ValueType::Special(s) => s.doc(),
             ValueType::Vector(v) => v.doc(),
@@ -69,7 +69,7 @@ impl ValueType {
     /// Get the name of this type.
     pub fn name(&self) -> String {
         match self {
-            ValueType::BV(_) => unimplemented!(),
+            ValueType::BV(b) => b.name(),
             ValueType::Lane(l) => l.name(),
             ValueType::Special(s) => s.name(),
             ValueType::Vector(v) => v.name(),
@@ -308,12 +308,24 @@ impl VectorType {
 }
 
 /// A flat bitvector type. Used for semantics description only.
-pub struct BVType;
+pub struct BVType {
+    bits: u64
+}
 
 impl BVType {
     /// Initialize a new bitvector type with `n` bits.
-    pub fn _new() -> Self {
-        Self {}
+    pub fn _new(bits: u64) -> Self {
+        Self { bits }
+    }
+
+    /// Return a string containing the documentation comment for this bitvector type.
+    pub fn doc(&self) -> String {
+        format!("A bitvector type with {} bits.", self.bits)
+    }
+
+    /// Get the name of this bitvector type.
+    pub fn name(&self) -> String {
+        format!("bv{}", self.bits)
     }
 }
 
@@ -325,10 +337,6 @@ pub struct SpecialType {
 }
 
 impl SpecialType {
-    pub fn name(&self) -> String {
-        self.tag.name()
-    }
-
     pub fn doc(&self) -> String {
         match self.tag {
             SpecialTypeTag::Flag(base_types::Flag::IFlags) => String::from(
@@ -340,6 +348,10 @@ impl SpecialType {
                 flags can be tested with a :type:`floatcc` condition code.",
             ),
         }
+    }
+
+    pub fn name(&self) -> String {
+        self.tag.name()
     }
 
     pub fn number(&self) -> u8 {
