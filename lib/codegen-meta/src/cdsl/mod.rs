@@ -27,7 +27,6 @@ fn _camel_case(s: &str) -> String {
 }
 
 /// Check if `x` is a power of two.
-/// TODO: This might need to be generic.
 fn _is_power_of_two(x: u8) -> bool {
     x > 0 && x & (x - 1) == 0
 }
