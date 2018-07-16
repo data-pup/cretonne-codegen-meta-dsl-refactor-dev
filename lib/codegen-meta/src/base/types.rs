@@ -29,7 +29,7 @@ pub enum Bool {
 
 impl Bool {
     /// Get the number of a boolean variant.
-    pub fn number(&self) -> u8 {
+    pub fn number(self) -> u8 {
         let offset = match self {
             Bool::B1 => 0,
             Bool::B8 => 1,
@@ -98,7 +98,7 @@ pub enum Int {
 
 impl Int {
     /// Get the number of an integer variant.
-    pub fn number(&self) -> u8 {
+    pub fn number(self) -> u8 {
         let offset = 5 + match self {
             Int::I8 => 0,
             Int::I16 => 1,
@@ -158,7 +158,7 @@ pub enum Float {
 
 impl Float {
     /// Get the number of a float variant.
-    pub fn number(&self) -> u8 {
+    pub fn number(self) -> u8 {
         let offset = 9 + match self {
             Float::F32 => 0,
             Float::F64 => 1,
@@ -215,7 +215,7 @@ pub enum Flag {
 
 impl Flag {
     /// Get the number of a flag variant.
-    pub fn number(&self) -> u8 {
+    pub fn number(self) -> u8 {
         match self {
             Flag::IFlags => 1,
             Flag::FFlags => 2,

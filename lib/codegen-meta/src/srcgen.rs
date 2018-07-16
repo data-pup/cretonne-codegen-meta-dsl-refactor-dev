@@ -98,7 +98,7 @@ impl Formatter {
     }
 
     /// Emit a line outdented one level.
-    pub fn _outdented_line(&mut self, s: String) {
+    pub fn _outdented_line(&mut self, s: &str) {
         let new_line = format!("{}{}", self._get_outdent(), s);
         self.lines.push(new_line);
     }
@@ -200,7 +200,7 @@ impl Formatter {
     ///            some body
     ///        }
     ///    }
-    fn _add_match(&mut self, _m: _Match) {
+    fn _add_match(&mut self, _m: &_Match) {
         unimplemented!();
     }
 }
@@ -238,11 +238,9 @@ fn parse_multiline(s: &str) -> Vec<String> {
     let mut trimmed = Vec::with_capacity(lines.len());
 
     // Remove indentation (first line is special)
-    lines_iter
-        .next()
-        .map(|l| l.trim())
-        .map(|l| l.to_string())
-        .map(|s| trimmed.push(s));
+    if let Some(s) = lines_iter.next().map(|l| l.trim()).map(|l| l.to_string()) {
+        trimmed.push(s);
+    }
 
     // Remove trailing whitespace from other lines.
     let mut other_lines = if let Some(indent) = indent {
@@ -308,7 +306,7 @@ impl<'a> _Match<'a> {
     /// Add an arm to the Match statement.
     fn _arm(&mut self, name: &'a str, fields: Vec<&'a str>, body: &'a str) {
         // let key = (fields, body);
-        let match_arm = self.arms.entry((fields, body)).or_insert(HashSet::new());
+        let match_arm = self.arms.entry((fields, body)).or_insert_with(HashSet::new);
         match_arm.insert(name);
     }
 }

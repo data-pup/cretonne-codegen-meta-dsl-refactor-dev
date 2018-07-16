@@ -26,11 +26,9 @@ fn source_files(dir: &path::PathBuf) -> Result<Vec<String>, error::Error> {
             if path.is_dir() {
                 let mut child_dir_files = source_files(&path)?;
                 files.append(&mut child_dir_files);
-            } else {
-                if let Some(ext) = path.extension() {
-                    if ext == "rs" {
-                        files.push(path.to_str().unwrap().to_string());
-                    }
+            } else if let Some(ext) = path.extension() {
+                if ext == "rs" {
+                    files.push(path.to_str().unwrap().to_string());
                 }
             }
         }

@@ -102,14 +102,6 @@ pub struct LaneType {
 }
 
 impl LaneType {
-    /// Create a lane of the type with the given number of bits.
-    pub fn _new<T>(_bits: u64, _t: T) -> LaneType
-    where
-        T: Into<LaneTypeTag>,
-    {
-        unimplemented!();
-    }
-
     /// Get the name of this type.
     pub fn name(&self) -> String {
         self._tag.name()
@@ -191,7 +183,7 @@ pub enum LaneTypeTag {
 
 impl LaneTypeTag {
     /// Get the name of a lane type.
-    fn name(&self) -> String {
+    fn name(self) -> String {
         match self {
             LaneTypeTag::BoolType(b) => format!("{}", b),
             LaneTypeTag::IntType(i) => format!("{}", i),
@@ -199,7 +191,7 @@ impl LaneTypeTag {
         }
     }
 
-    fn number(&self) -> u8 {
+    fn number(self) -> u8 {
         match self {
             LaneTypeTag::BoolType(b) => b.number(),
             LaneTypeTag::IntType(i) => i.number(),
@@ -263,10 +255,7 @@ pub struct VectorType {
 impl VectorType {
     /// Initialize a new integer type with `n` bits.
     pub fn new(base: LaneType, lanes: u64) -> VectorType {
-        VectorType {
-            base: base,
-            lanes: lanes,
-        }
+        VectorType { base, lanes }
     }
 
     /// Get the name of this type.
@@ -284,7 +273,7 @@ impl VectorType {
 
     /// Find the unique number associated with this type.
     pub fn number(&self) -> u8 {
-        let b = self.base.number() as f64;
+        let b = f64::from(self.base.number());
         let l = (self.lanes as f64).log2();
         let num = 16_f64 * l + b;
         num as u8
