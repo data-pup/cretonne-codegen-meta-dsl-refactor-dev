@@ -46,7 +46,7 @@ impl ValueType {
         match self {
             ValueType::BV(_) => unimplemented!(),
             ValueType::Lane(l) => l._lane_bits(),
-            ValueType::Special(s) => unimplemented!(),
+            ValueType::Special(_) => unimplemented!(),
             ValueType::Vector(v) => v._lane_bits(),
         }
     }
@@ -56,7 +56,7 @@ impl ValueType {
         match self {
             ValueType::BV(_) => unimplemented!(),
             ValueType::Lane(l) => l._lane_count(),
-            ValueType::Special(s) => unimplemented!(),
+            ValueType::Special(_) => unimplemented!(),
             ValueType::Vector(v) => v._lane_count(),
         }
     }
@@ -144,12 +144,6 @@ impl LaneType {
     pub fn doc(&self) -> String {
         match self.tag {
             LaneTypeTag::BoolType(_) => format!("A boolean type with {} bits.", self.bits),
-            LaneTypeTag::IntType(_) if self.bits < 32 => format!(
-                "An integer type with {} bits.
-                WARNING: arithmetic on {}bit integers is incomplete.",
-                self.bits, self.bits
-            ),
-            LaneTypeTag::IntType(_) => format!("An integer type with {} bits.", self.bits),
             LaneTypeTag::FloatType(base_types::Float::F32) => String::from(
                 "A 32-bit floating point type represented in the IEEE 754-2008
                 *binary32* interchange format. This corresponds to the :c:type:`float`
@@ -160,6 +154,12 @@ impl LaneType {
                 *binary64* interchange format. This corresponds to the :c:type:`double`
                 type in most C implementations.",
             ),
+            LaneTypeTag::IntType(_) if self.bits < 32 => format!(
+                "An integer type with {} bits.
+                WARNING: arithmetic on {}bit integers is incomplete",
+                self.bits, self.bits
+            ),
+            LaneTypeTag::IntType(_) => format!("An integer type with {} bits.", self.bits),
         }
     }
 
@@ -277,7 +277,7 @@ impl VectorType {
 
     pub fn doc(&self) -> String {
         format!(
-            "A SIMD vector with {} lanes containing a '{}' each.",
+            "A SIMD vector with {} lanes containing a `{}` each.",
             self.lanes,
             self.base.name()
         )
@@ -336,8 +336,8 @@ impl SpecialType {
                 can be tested with an :type:`intcc` condition code.",
             ),
             SpecialTypeTag::Flag(base_types::Flag::FFlags) => String::from(
-                "CPU flags representing the result of a floating point comparison. These flags
-                can be tested with a :type:`floatcc` condition code.",
+                "CPU flags representing the result of a floating point comparison. These
+                flags can be tested with a :type:`floatcc` condition code.",
             ),
         }
     }
