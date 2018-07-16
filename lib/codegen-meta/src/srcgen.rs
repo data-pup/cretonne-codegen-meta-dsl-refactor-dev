@@ -36,25 +36,8 @@ pub struct Formatter {
 }
 
 impl Formatter {
-    /// Source code formatter class.
-    ///
-    /// - Collect source code to be written to a file.
-    /// - Keep track of indentation.
-    ///
-    /// Indentation example: FIXUP: Convert example to Rust.
-    ///
-    ///    >>> f = Formatter()
-    ///    >>> f.line('Hello line 1')
-    ///    >>> f.writelines()
-    ///    Hello line 1
-    ///    >>> f.indent_push()
-    ///    >>> f.comment('Nested comment')
-    ///    >>> f.indent_pop()
-    ///    >>> f.format('Back {} again', 'home')
-    ///    >>> f.writelines()
-    ///    Hello line 1
-    ///        // Nested comment
-    ///    Back home again
+    /// Source code formatter class. Used to collect source code to be written
+    /// to a file, and keep track of indentation.
     pub fn new() -> Formatter {
         Formatter {
             indent: 0,
@@ -103,21 +86,6 @@ impl Formatter {
         self.lines.push(new_line);
     }
 
-    /// Write all lines to `out`, or stdout if `out` is `None`.
-    pub fn _writelines(&self, out: Option<&io::Write>) -> Result<(), io::Error> {
-        match out {
-            Some(_w) => {
-                unimplemented!();
-                // FIXUP:
-                // self.lines.iter().map(|line| w.write(line))
-            }
-            None => {
-                self.lines.iter().for_each(|line| println!("{}", line));
-                Ok(())
-            }
-        }
-    }
-
     /// Write `self.lines` to a file.
     pub fn update_file(&self, filename: &str, directory: &str) -> Result<(), error::Error> {
         #[cfg(target_family = "windows")]
@@ -135,25 +103,12 @@ impl Formatter {
         Ok(())
     }
 
-    /// FIXUP: Convert example code into Rust.
-    ///
-    /// Return a scope object for use with a `with` statement:
-    ///
-    ///    >>> f = Formatter()
-    ///    >>> with f.indented('prefix {', '} suffix'):
-    ///    ...     f.line('hello')
-    ///    >>> f.writelines()
-    ///    prefix {
-    ///        hello
-    ///    } suffix
-    ///
+    /// Return a scope object for use with a `with` statement.
     /// The optional `before` and `after` parameters are surrounding lines
     /// which are *not* indented.
     fn _indented(&self, _before: Option<&str>, _after: Option<&str>) -> _IndentedScope {
         unimplemented!();
     }
-
-    // TODO: Should this class implement a format trait?
 
     /// Add one or more lines after stripping common indentation.
     pub fn _multi_line(&mut self, s: &str) {
@@ -174,32 +129,7 @@ impl Formatter {
             .for_each(|s| self.line(s.as_str()));
     }
 
-    /// FIXUP: Convert example code into Rust.
-    ///
     /// Add a match expression.
-    ///
-    /// Example:
-    ///
-    ///    >>> f = Formatter()
-    ///    >>> m = Match('x')
-    ///    >>> m.arm('Orange', ['a', 'b'], 'some body')
-    ///    >>> m.arm('Yellow', ['a', 'b'], 'some body')
-    ///    >>> m.arm('Green', ['a', 'b'], 'different body')
-    ///    >>> m.arm('Blue', ['x', 'y'], 'some body')
-    ///    >>> f.match(m)
-    ///    >>> f.writelines()
-    ///    match x {
-    ///        Orange { a, b } |
-    ///        Yellow { a, b } => {
-    ///            some body
-    ///        }
-    ///        Green { a, b } => {
-    ///            different body
-    ///        }
-    ///        Blue { x, y } => {
-    ///            some body
-    ///        }
-    ///    }
     fn _add_match(&mut self, _m: &_Match) {
         unimplemented!();
     }
@@ -216,10 +146,8 @@ fn _indent(s: &str) -> Option<usize> {
 }
 
 /// Given a multi-line string, split it into a sequence of lines after
-/// stripping a common indentation, as described in the "trim" function
-/// from PEP 257. This is useful for strings defined with doc strings:
-///    >>> parse_multiline('\\n    hello\\n    world\\n')
-///    ['hello', 'world']
+/// stripping a common indentation. This is useful for strings defined with
+/// doc strings.
 fn parse_multiline(s: &str) -> Vec<String> {
     // Convert tabs into spaces.
     let expanded_tab = format!("{:-1$}", " ", SHIFTWIDTH);
@@ -276,17 +204,6 @@ fn parse_multiline(s: &str) -> Vec<String> {
 /// Match objects collect all the information needed to emit a Rust `match`
 /// expression, automatically deduplicating overlapping identical arms.
 ///
-/// TODO: Convert the example to Rust
-///
-/// Example:
-///
-///    >>> m = Match('x')
-///    >>> m.arm('Orange', ['a', 'b'], 'some body')
-///    >>> m.arm('Yellow', ['a', 'b'], 'once told me')
-///    >>> m.arm('Green', ['a', 'b'], 'different body')
-///    >>> m.arm('Blue', ['x', 'y'], 'some body')
-///    >>> assert(len(m.arms) == 3)
-///
 /// Note that this class is ignorant of Rust types, and considers two fields
 /// with the same name to be equivalent.
 struct _Match<'a> {
@@ -333,6 +250,22 @@ mod srcgen_tests {
         let expected = vec!["hello", "world"];
         let output = parse_multiline(input);
         assert_eq!(output, expected);
+    }
+
+    #[test]
+    fn formatter_basic_example_works() {
+        let mut fmt = Formatter::new();
+        fmt.line("Hello line 1");
+        fmt._indent_push();
+        fmt._comment("Nested comment");
+        fmt._indent_pop();
+        fmt.line("Back home again");
+        let expected_lines = vec![
+            "Hello line 1\n",
+            "    // Nested comment\n",
+            "Back home again\n",
+        ];
+        assert_eq!(fmt.lines, expected_lines);
     }
 
     #[test]

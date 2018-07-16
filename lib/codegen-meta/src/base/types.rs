@@ -162,6 +162,9 @@ impl Iterator for FloatIterator {
 }
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
+/// A type representing CPU flags.
+///
+/// Flags can't be stored in memory.
 pub enum Flag {
     /// CPU flags from an integer comparison.
     IFlags,
