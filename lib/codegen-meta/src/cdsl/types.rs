@@ -46,7 +46,7 @@ impl ValueType {
         match self {
             ValueType::BV(b) => b.lane_bits(),
             ValueType::Lane(l) => l.lane_bits(),
-            ValueType::Special(_) => unimplemented!(),
+            ValueType::Special(s) => s.lane_bits(),
             ValueType::Vector(v) => v.lane_bits(),
         }
     }
@@ -345,6 +345,12 @@ impl SpecialType {
                 "CPU flags representing the result of a floating point comparison. These
                 flags can be tested with a :type:`floatcc` condition code.",
             ),
+        }
+    }
+
+    pub fn lane_bits(&self) -> u64 {
+        match self.tag {
+            SpecialTypeTag::Flag(_) => 0
         }
     }
 
