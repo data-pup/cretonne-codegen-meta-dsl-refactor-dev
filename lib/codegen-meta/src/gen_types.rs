@@ -13,6 +13,10 @@ use srcgen;
 /// Emit a constant definition of a single value type.
 fn emit_type(ty: &cdsl_types::ValueType, fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
     let name = ty.name().to_uppercase();
+    let number = ty.number().ok_or(error::Error::with_msg(format!(
+        "Could not emit type `{}` which has no number.",
+        name
+    )))?;
     fmt.doc_comment(&ty.doc());
     fmt.line(&format!(
         "pub const {}: Type = Type({:#x});\n",

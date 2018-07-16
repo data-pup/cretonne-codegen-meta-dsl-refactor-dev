@@ -75,12 +75,12 @@ impl ValueType {
     }
 
     /// Find the unique number associated with this type.
-    pub fn number(&self) -> u8 {
+    pub fn number(&self) -> Option<u8> {
         match self {
-            ValueType::BV(_) => unimplemented!(),
-            ValueType::Lane(l) => l.number(),
-            ValueType::Special(s) => s.number(),
-            ValueType::Vector(v) => v.number(),
+            ValueType::BV(_) => None,
+            ValueType::Lane(l) => Some(l.number()),
+            ValueType::Special(s) => Some(s.number()),
+            ValueType::Vector(v) => Some(v.number()),
         }
     }
 
@@ -350,7 +350,7 @@ impl SpecialType {
 
     pub fn lane_bits(&self) -> u64 {
         match self.tag {
-            SpecialTypeTag::Flag(_) => 0
+            SpecialTypeTag::Flag(_) => 0,
         }
     }
 
