@@ -61,12 +61,9 @@ impl ValueType {
         }
     }
 
+    /// Return the name of this type for other Rust source files.
     pub fn _rust_name(&self) -> String {
-        match self {
-            ValueType::Lane(l) => l._rust_name(),
-            ValueType::Special(s) => s._rust_name(),
-            _ => unimplemented!(),
-        }
+        format!("{}{}", _RUST_NAME_PREFIX, self.name().to_uppercase())
     }
 }
 
@@ -158,18 +155,6 @@ impl LaneType {
     ///     2. each lane in self has at least as many bits as a lane in other
     fn _wider_or_equal(&self, rhs: &LaneType) -> bool {
         (self._lane_count() == rhs._lane_count()) && (self._lane_bits() >= rhs._lane_bits())
-    }
-
-    /// Get the name of the type.
-    /// FIXUP: Describe the distinction between this method and `name`
-    fn _rust_name(&self) -> String {
-        let type_name: &'static str = match self._tag {
-            LaneTypeTag::BoolType(_) => "BoolType",
-            LaneTypeTag::IntType(_) => "IntType",
-            LaneTypeTag::FloatType(_) => "FloatType",
-        };
-
-        format!("{}{}", _RUST_NAME_PREFIX, type_name.to_uppercase())
     }
 }
 
@@ -308,10 +293,6 @@ pub struct SpecialType {
 }
 
 impl SpecialType {
-    pub fn _rust_name(&self) -> String {
-        format!("{}{}", _RUST_NAME_PREFIX, self.name().to_uppercase())
-    }
-
     pub fn name(&self) -> String {
         self.tag.name()
     }
