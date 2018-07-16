@@ -7,7 +7,7 @@ use base::types as base_types;
 
 static _RUST_NAME_PREFIX: &'static str = "ir::types::";
 
-// ValueType instances (i8, i32, ...) are provided in the `base.types` module.
+// ValueType variants (i8, i32, ...) are provided in `base::types.rs`.
 
 /// A concrete SSA value type.
 ///
