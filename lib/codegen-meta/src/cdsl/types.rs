@@ -94,25 +94,25 @@ impl From<VectorType> for ValueType {
 /// A concrete scalar type that can appear as a vector lane too.
 #[derive(Debug, Clone, Copy)]
 pub struct LaneType {
-    _bits: u64,
-    _tag: LaneTypeTag,
+    bits: u64,
+    tag: LaneTypeTag,
 }
 
 impl LaneType {
     /// Get the name of this type.
     pub fn name(&self) -> String {
-        self._tag.name()
+        self.tag.name()
     }
 
     pub fn doc(&self) -> String {
-        match self._tag {
-            LaneTypeTag::BoolType(_) => format!("A boolean type with {} bits.", self._bits),
-            LaneTypeTag::IntType(_) if self._bits < 32 => format!(
+        match self.tag {
+            LaneTypeTag::BoolType(_) => format!("A boolean type with {} bits.", self.bits),
+            LaneTypeTag::IntType(_) if self.bits < 32 => format!(
                 "An integer type with {} bits.
                 WARNING: arithmetic on {}bit integers is incomplete.",
-                self._bits, self._bits
+                self.bits, self.bits
             ),
-            LaneTypeTag::IntType(_) => format!("An integer type with {} bits.", self._bits),
+            LaneTypeTag::IntType(_) => format!("An integer type with {} bits.", self.bits),
             LaneTypeTag::FloatType(base_types::Float::F32) => String::from(
                 "A 32-bit floating point type represented in the IEEE 754-2008
                 *binary32* interchange format. This corresponds to the :c:type:`float`
@@ -127,7 +127,7 @@ impl LaneType {
     }
 
     pub fn number(&self) -> u8 {
-        self._tag.number()
+        self.tag.number()
     }
 
     /// Find the number of bytes that this type occupies in memory.
@@ -142,7 +142,7 @@ impl LaneType {
 
     /// Return the number of bits in a lane.
     pub fn _lane_bits(&self) -> u64 {
-        self._bits
+        self.bits
     }
 
     /// Return the total number of bits of an instance of this type.
@@ -206,20 +206,20 @@ impl Iterator for LaneTypeIterator {
     fn next(&mut self) -> Option<Self::Item> {
         if let Some(b) = self.bool_iter.next() {
             let next = LaneType {
-                _bits: b as u64,
-                _tag: LaneTypeTag::BoolType(b),
+                bits: b as u64,
+                tag: LaneTypeTag::BoolType(b),
             };
             Some(next)
         } else if let Some(i) = self.int_iter.next() {
             let next = LaneType {
-                _bits: i as u64,
-                _tag: LaneTypeTag::IntType(i),
+                bits: i as u64,
+                tag: LaneTypeTag::IntType(i),
             };
             Some(next)
         } else if let Some(f) = self.float_iter.next() {
             let next = LaneType {
-                _bits: f as u64,
-                _tag: LaneTypeTag::FloatType(f),
+                bits: f as u64,
+                tag: LaneTypeTag::FloatType(f),
             };
             Some(next)
         } else {
