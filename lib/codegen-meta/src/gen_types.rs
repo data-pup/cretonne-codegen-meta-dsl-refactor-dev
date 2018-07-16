@@ -26,7 +26,6 @@ fn emit_type(ty: &cdsl_types::ValueType, fmt: &mut srcgen::Formatter) -> Result<
 }
 
 /// Emit definition for all vector types with `bits` total size.
-/// FIXUP: What type should `_bits` be defined as?
 fn emit_vectors(bits: u64, fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
     let size: u64 = bits / 8;
     cdsl_types::ValueType::all_lane_types()
