@@ -5,8 +5,6 @@
 //! most commonly used types, including all of the scalar types.
 //!
 //! This ensures that Python and Rust use the same type numbering.
-//!
-//! DEVELOPMENT NOTE: This will generate a `new_types.rs` file until complete.
 
 use cdsl::types as cdsl_types;
 use error;
