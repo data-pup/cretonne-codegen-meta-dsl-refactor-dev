@@ -11,7 +11,7 @@ use std::fmt;
 //
 // Vector types are encoded with the lane type in the low 4 bits and log2(lanes)
 // in the high 4 bits, giving a range of 2-256 lanes.
-static _LANE_BASE: u8 = 0x70;
+static LANE_BASE: u8 = 0x70;
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum Bool {
@@ -38,7 +38,7 @@ impl Bool {
             Bool::B64 => 4,
         };
 
-        _LANE_BASE + offset
+        LANE_BASE + offset
     }
 }
 
@@ -106,7 +106,7 @@ impl Int {
             Int::I64 => 3,
         };
 
-        _LANE_BASE + offset
+        LANE_BASE + offset
     }
 }
 
@@ -164,7 +164,7 @@ impl Float {
             Float::F64 => 1,
         };
 
-        _LANE_BASE + offset
+        LANE_BASE + offset
     }
 }
 
