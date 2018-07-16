@@ -42,22 +42,6 @@ impl Bool {
     }
 }
 
-impl fmt::Display for Bool {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                Bool::B1 => "b1",
-                Bool::B8 => "b8",
-                Bool::B16 => "b16",
-                Bool::B32 => "b32",
-                Bool::B64 => "b64",
-            }
-        )
-    }
-}
-
 pub struct BoolIterator {
     index: usize,
 }
@@ -110,21 +94,6 @@ impl Int {
     }
 }
 
-impl fmt::Display for Int {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                Int::I8 => "i8",
-                Int::I16 => "i16",
-                Int::I32 => "i32",
-                Int::I64 => "i64",
-            }
-        )
-    }
-}
-
 pub struct IntIterator {
     index: usize,
 }
@@ -165,19 +134,6 @@ impl Float {
         };
 
         LANE_BASE + offset
-    }
-}
-
-impl fmt::Display for Float {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                Float::F32 => "f32",
-                Float::F64 => "f64",
-            }
-        )
     }
 }
 

@@ -169,9 +169,9 @@ impl LaneType {
     /// Get the name of this lane type.
     pub fn name(&self) -> String {
         match self.tag {
-            LaneTypeTag::BoolType(b) => format!("{}", b),
-            LaneTypeTag::FloatType(f) => format!("{}", f),
-            LaneTypeTag::IntType(i) => format!("{}", i),
+            LaneTypeTag::BoolType(_) => format!("b{}", self.bits),
+            LaneTypeTag::FloatType(_) => format!("f{}", self.bits),
+            LaneTypeTag::IntType(_) => format!("i{}", self.bits),
         }
     }
 
