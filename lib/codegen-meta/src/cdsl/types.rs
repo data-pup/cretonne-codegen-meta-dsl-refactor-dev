@@ -21,24 +21,14 @@ pub enum ValueType {
 }
 
 impl ValueType {
-    /// Iterate through all of the special types (neither lanes nor vectors).
-    pub fn all_special_types() -> SpecialTypeIterator {
-        SpecialTypeIterator::new()
-    }
-
     /// Iterate through all of the lane types.
     pub fn all_lane_types() -> LaneTypeIterator {
         LaneTypeIterator::new()
     }
 
-    /// Get the name of this type.
-    pub fn name(&self) -> String {
-        match self {
-            ValueType::BV(_) => unimplemented!(),
-            ValueType::Lane(l) => l.name(),
-            ValueType::Special(s) => s.name(),
-            ValueType::Vector(v) => v.name(),
-        }
+    /// Iterate through all of the special types (neither lanes nor vectors).
+    pub fn all_special_types() -> SpecialTypeIterator {
+        SpecialTypeIterator::new()
     }
 
     /// Return a string containing the documentation comment for this type.
@@ -48,6 +38,41 @@ impl ValueType {
             ValueType::Lane(l) => l.doc(),
             ValueType::Special(s) => s.doc(),
             ValueType::Vector(v) => v.doc(),
+        }
+    }
+
+    /// Return the number of bits in a lane.
+    pub fn lane_bits(&self) -> u64 {
+        match self {
+            ValueType::BV(_) => unimplemented!(),
+            ValueType::Lane(l) => l._lane_bits(),
+            ValueType::Special(s) => unimplemented!(),
+            ValueType::Vector(v) => v._lane_bits(),
+        }
+    }
+
+    /// Return the number of lanes.
+    pub fn lane_count(&self) -> u64 {
+        match self {
+            ValueType::BV(_) => unimplemented!(),
+            ValueType::Lane(l) => l._lane_count(),
+            ValueType::Special(s) => unimplemented!(),
+            ValueType::Vector(v) => v._lane_count(),
+        }
+    }
+
+    /// Find the number of bytes that this type occupies in memory.
+    pub fn membytes(&self) -> u64 {
+        self.width() / 8
+    }
+
+    /// Get the name of this type.
+    pub fn name(&self) -> String {
+        match self {
+            ValueType::BV(_) => unimplemented!(),
+            ValueType::Lane(l) => l.name(),
+            ValueType::Special(s) => s.name(),
+            ValueType::Vector(v) => v.name(),
         }
     }
 
@@ -65,26 +90,42 @@ impl ValueType {
     pub fn _rust_name(&self) -> String {
         format!("{}{}", _RUST_NAME_PREFIX, self.name().to_uppercase())
     }
+
+    /// Return true iff:
+    ///     1. self and other have equal number of lanes
+    ///     2. each lane in self has at least as many bits as a lane in other
+    pub fn _wider_or_equal(&self, rhs: &ValueType) -> bool {
+        (self.lane_count() == rhs.lane_count()) && (self.lane_bits() >= rhs.lane_bits())
+    }
+
+    /// Return the total number of bits of an instance of this type.
+    pub fn width(&self) -> u64 {
+        self.lane_count() * self.lane_bits()
+    }
 }
 
+/// Create a ValueType from a given bitvector type.
 impl From<BVType> for ValueType {
     fn from(bv: BVType) -> Self {
         ValueType::BV(bv)
     }
 }
 
+/// Create a ValueType from a given lane type.
 impl From<LaneType> for ValueType {
     fn from(lane: LaneType) -> Self {
         ValueType::Lane(lane)
     }
 }
 
+/// Create a ValueType from a given special type.
 impl From<SpecialType> for ValueType {
     fn from(spec: SpecialType) -> Self {
         ValueType::Special(spec)
     }
 }
 
+/// Create a ValueType from a given vector type.
 impl From<VectorType> for ValueType {
     fn from(vector: VectorType) -> Self {
         ValueType::Vector(vector)
@@ -99,11 +140,7 @@ pub struct LaneType {
 }
 
 impl LaneType {
-    /// Get the name of this type.
-    pub fn name(&self) -> String {
-        self.tag.name()
-    }
-
+    /// Return a string containing the documentation comment for this lane type.
     pub fn doc(&self) -> String {
         match self.tag {
             LaneTypeTag::BoolType(_) => format!("A boolean type with {} bits.", self.bits),
@@ -126,13 +163,9 @@ impl LaneType {
         }
     }
 
-    pub fn number(&self) -> u8 {
-        self.tag.number()
-    }
-
-    /// Find the number of bytes that this type occupies in memory.
-    pub fn membytes(&self) -> u64 {
-        self._lane_bits() / 8
+    /// Return the number of bits in a lane.
+    pub fn _lane_bits(&self) -> u64 {
+        self.bits
     }
 
     /// Return the number of bits in a lane.
@@ -140,24 +173,26 @@ impl LaneType {
         1
     }
 
-    /// Return the number of bits in a lane.
-    pub fn _lane_bits(&self) -> u64 {
-        self.bits
+    /// Get the name of this lane type.
+    pub fn name(&self) -> String {
+        match self.tag {
+            LaneTypeTag::BoolType(b) => format!("{}", b),
+            LaneTypeTag::FloatType(f) => format!("{}", f),
+            LaneTypeTag::IntType(i) => format!("{}", i),
+        }
     }
 
-    /// Return the total number of bits of an instance of this type.
-    fn _width(&self) -> u64 {
-        self._lane_count() * self._lane_bits()
-    }
-
-    /// Return true iff:
-    ///     1. self and other have equal number of lanes
-    ///     2. each lane in self has at least as many bits as a lane in other
-    fn _wider_or_equal(&self, rhs: &LaneType) -> bool {
-        (self._lane_count() == rhs._lane_count()) && (self._lane_bits() >= rhs._lane_bits())
+    /// Find the unique number associated with this lane type.
+    pub fn number(&self) -> u8 {
+        match self.tag {
+            LaneTypeTag::BoolType(b) => b.number(),
+            LaneTypeTag::FloatType(f) => f.number(),
+            LaneTypeTag::IntType(i) => i.number(),
+        }
     }
 }
 
+/// Create a LaneType from a given bool variant.
 impl From<base_types::Bool> for LaneType {
     fn from(b: base_types::Bool) -> Self {
         let bits = b as u64;
@@ -166,14 +201,7 @@ impl From<base_types::Bool> for LaneType {
     }
 }
 
-impl From<base_types::Int> for LaneType {
-    fn from(i: base_types::Int) -> Self {
-        let bits = i as u64;
-        let tag = LaneTypeTag::IntType(i);
-        Self { bits, tag }
-    }
-}
-
+/// Create a LaneType from a given float variant.
 impl From<base_types::Float> for LaneType {
     fn from(f: base_types::Float) -> Self {
         let bits = f as u64;
@@ -182,33 +210,24 @@ impl From<base_types::Float> for LaneType {
     }
 }
 
-/// The kinds of elements in a lane.
+/// Create a LaneType from a given int variant.
+impl From<base_types::Int> for LaneType {
+    fn from(i: base_types::Int) -> Self {
+        let bits = i as u64;
+        let tag = LaneTypeTag::IntType(i);
+        Self { bits, tag }
+    }
+}
+
+/// Tags used to specify the kinds of elements in a lane type.
 #[derive(Debug, Clone, Copy)]
 pub enum LaneTypeTag {
     BoolType(base_types::Bool),
-    IntType(base_types::Int),
     FloatType(base_types::Float),
+    IntType(base_types::Int),
 }
 
-impl LaneTypeTag {
-    /// Get the name of a lane type.
-    fn name(self) -> String {
-        match self {
-            LaneTypeTag::BoolType(b) => format!("{}", b),
-            LaneTypeTag::IntType(i) => format!("{}", i),
-            LaneTypeTag::FloatType(f) => format!("{}", f),
-        }
-    }
-
-    fn number(self) -> u8 {
-        match self {
-            LaneTypeTag::BoolType(b) => b.number(),
-            LaneTypeTag::IntType(i) => i.number(),
-            LaneTypeTag::FloatType(f) => f.number(),
-        }
-    }
-}
-
+/// An iterator for different lane types.
 pub struct LaneTypeIterator {
     bool_iter: base_types::BoolIterator,
     int_iter: base_types::IntIterator,
@@ -216,6 +235,7 @@ pub struct LaneTypeIterator {
 }
 
 impl LaneTypeIterator {
+    /// Create a new lane type iterator.
     fn new() -> Self {
         Self {
             bool_iter: base_types::BoolIterator::new(),
@@ -255,17 +275,17 @@ impl VectorType {
         VectorType { base, lanes }
     }
 
-    /// Get the name of this type.
-    pub fn name(&self) -> String {
-        format!("{}X{}", self.base.name(), self.lanes,)
-    }
-
     pub fn doc(&self) -> String {
         format!(
             "A SIMD vector with {} lanes containing a '{}' each.",
             self.lanes,
             self.base.name()
         )
+    }
+
+    /// Get the name of this type.
+    pub fn name(&self) -> String {
+        format!("{}X{}", self.base.name(), self.lanes,)
     }
 
     /// Find the unique number associated with this type.
@@ -276,14 +296,14 @@ impl VectorType {
         num as u8
     }
 
-    /// Return the number of lanes.
-    pub fn _lane_count(&self) -> u64 {
-        self.lanes
-    }
-
     /// Return the number of bits in a lane.
     pub fn _lane_bits(&self) -> u64 {
         self.base._lane_bits()
+    }
+
+    /// Return the number of lanes.
+    pub fn _lane_count(&self) -> u64 {
+        self.lanes
     }
 }
 

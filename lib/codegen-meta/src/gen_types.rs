@@ -25,11 +25,11 @@ fn emit_type(ty: &cdsl_types::ValueType, fmt: &mut srcgen::Formatter) -> Result<
 
 /// Emit definition for all vector types with `bits` total size.
 fn emit_vectors(bits: u64, fmt: &mut srcgen::Formatter) -> Result<(), error::Error> {
-    let size: u64 = bits / 8;
+    let vec_size: u64 = bits / 8;
     cdsl_types::ValueType::all_lane_types()
-        .map(|ty| (ty, ty.membytes()))
-        .filter(|(_, mb)| *mb != 0 && *mb < size)
-        .map(|(ty, mb)| (ty, size / mb))
+        .map(|ty| (ty, cdsl_types::ValueType::from(ty).membytes()))
+        .filter(|(_, lane_size)| *lane_size != 0 && *lane_size < vec_size)
+        .map(|(ty, lane_size)| (ty, vec_size / lane_size))
         .map(|(ty, lanes)| cdsl_types::VectorType::new(ty, lanes))
         .try_for_each(|vec| emit_type(&cdsl_types::ValueType::from(vec), fmt))?;
 
