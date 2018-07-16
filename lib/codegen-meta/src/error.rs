@@ -24,8 +24,10 @@ impl fmt::Display for Error {
 }
 
 impl From<io::Error> for Error {
-    fn from(_e: io::Error) -> Self {
-        unimplemented!();
+    fn from(e: io::Error) -> Self {
+        Error {
+            inner: Box::new(ErrorInner::IoError(e)),
+        }
     }
 }
 
