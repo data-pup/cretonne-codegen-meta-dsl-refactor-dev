@@ -1,8 +1,8 @@
 use std::fmt;
 use std::io;
 
-/// An error that occurred when the cretonne_codegen_meta crate was generating
-/// files for the cretonne_codegen crate.
+/// An error that occurred when the cranelift_codegen_meta crate was generating
+/// files for the cranelift_codegen crate.
 #[derive(Debug)]
 pub struct Error {
     inner: Box<ErrorInner>,

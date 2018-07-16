@@ -1,6 +1,6 @@
 [package]
 name = "cranelift-codegen-meta"
-authors = ["The Cretonne Project Developers"]
+authors = ["The Cranelift Project Developers"]
 version = "0.15.0"
 description = "DSL for cranelift-codegen code generator library"
 license = "Apache-2.0"
